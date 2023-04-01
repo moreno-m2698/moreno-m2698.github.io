@@ -296,13 +296,13 @@ function CellsToCheckJSON() {
 
 var initial_alive_list = [[0,0], [1,0], [0,1], [3,3], [3,2], [2,3], [8,1], [6,1], [7,1], [1,6], [2,7],[0,8],[1,8],[2,8]]
 
-function set_board(list) { //Will take in a list of length 2 arrays for the positions [x,y]
+function setBoard(list) { //Will take in a list of length 2 arrays for the positions [x,y]
     for (var element = 0; element < list.length; element++) {
         board_array[list[element][1]][list[element][0]].alive = true;
     }
 }
 
-function board_update() { //pass in the json thats holding the points
+function boardUpdate() { //pass in the json thats holding the points
     
     for (key in check_json) {//This loop scans the cells surrounding a listed cell
         for (index = 0; index < check_json[key].length; index++) {
@@ -376,24 +376,24 @@ function run_conway_game() { //attack to button and this will pause and start th
 }
 
 
-window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
-    // var xVal = event.x,
-    // yVal = event.y;
-    // console.log(xVal, yVal);
-    // for (var i = 0; i < vertical_limit; i++) {
-    //     board_array[i].forEach(function(element) {
-    //         if (element.x <= xVal && xVal <= element.x + element.width && element.y <= yVal && yVal <= element.y + element.height) {
-    //             console.log(element.x_index, element.y_index, element.alive);
-    //             element.toggle();
-    //             element.neighbor_information();
-    //             console.log(element.neighbors);
-    //         }
-    //     });
-    // }
-    board_update();
-    console.log(check_json);
+// window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
+//     // var xVal = event.x,
+//     // yVal = event.y;
+//     // console.log(xVal, yVal);
+//     // for (var i = 0; i < vertical_limit; i++) {
+//     //     board_array[i].forEach(function(element) {
+//     //         if (element.x <= xVal && xVal <= element.x + element.width && element.y <= yVal && yVal <= element.y + element.height) {
+//     //             console.log(element.x_index, element.y_index, element.alive);
+//     //             element.toggle();
+//     //             element.neighbor_information();
+//     //             console.log(element.neighbors);
+//     //         }
+//     //     });
+//     // }
+//     boardUpdate();
+//     console.log(check_json);
 
-}, false);
+// }, false);
 
 
 
@@ -412,7 +412,7 @@ function animate() {
 init();
 
 //Need to lock the order of these functions into the pause/play button
-set_board(initial_alive_list);
+setBoard(initial_alive_list);
 CellsToCheckJSON();
 console.log(check_json);
 
