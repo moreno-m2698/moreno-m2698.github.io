@@ -47,6 +47,7 @@ function ConwayUnit(x, y, square_length, x_index, y_index) {
     this.y_index = y_index;
     this.board = [];
     this.neighbors = [];
+    this.neighbor_coords = [];
 
 
     this.draw = function() {
@@ -83,132 +84,29 @@ function ConwayUnit(x, y, square_length, x_index, y_index) {
     //for vertical senscing need to be mindful of how much space above html elements take
         //another note, there seems to be some dependence on where the browser is currently located (observed when scrolling down webpage, the function doesnt work)
 
-    //For the next 2 methods will need to think about how we are storing board and doing comparisons since im pretty sure the board is calculated per increment and will cease to
-    //work once we begin animating
-
-    //Can bypass if i do neighbor_information and then do the conway_update since it is stored then
-
-    this.neighbor_info = function() { //revamping the under stuff
-
-        // Ask marcel about the error handling cause this isnt interacting the way that he said it would
-        // Also update to a 1d list model
-
-        this.neighbors = [[],[],[]];
-        for (var i = this.y_index - 1; i <= this.y_index + 1; i++) {
-            for (var j = this.x_index -1; j <= this.x_index + 1; j++) {
-                if (this.board[i][j] == undefined) {
-                    this.neighbors[i - (this.y_index - 1)].push(false);
-                }
-                else {
-                    this.neighbors[i - (this.y_index - 1)].push(this.board[i][j].alive);
-                }
-            }
-        }
-
-    }
-
-
-    this.neighbor_information = function() { //This will count how many alive units exist 
-
-        //Another note: we can probably just pass the 2d array from outside to cut down on space complexity of storing pointers
-
-        this.neighbors = [];
-        if (this.y_index == 0) { //checks to see if cell is occupying the top row
-            for (var i = 0; i<3; i++) {
-                this.neighbors.push(false);
-            }
-            if (this.x_index == 0) { //checks to see if cell is occupying the left top corner
-                this.neighbors.push(false);
-                this.neighbors.push(false);
-                for (var i = 0; i <= 1; i++) { //Current for loop and visual will break down if you try and make a board that has any length dimension of 1
-                    for (var j = 0; j <= 1; j++) {
-                        this.neighbors.push(this.board[i][j].alive)
-                    }
-                }
-                return this.neighbors
-            }
-
-            else if (this.x_index == this.board[0].length - 1) { //checks to see if we are in top right corner
-                for (var i = 0; i <= 1; i++) {
-                    for (var j = this.x_index - 1; j <= this.x_index; j++) {
-                        this.neighbors.push(this.board[i][j].alive)
-                    }
-                    this.neighbors.push(false);
-                }
-                return this.neighbors
-            }
-
-            else { //This is reserved for all the element in the top row except the corners
-                for (var i = 0; i<=1; i++) {
-                    for (var j = this.x_index - 1; j <= this.x_index + 1; j++){
-                        this.neighbors.push(this.board[i][j].alive)
-                    }
-                }
-                return this.neighbors
-            }
-            
-        }
-
-        if (this.y_index == this.board.length - 1) { //checks to see if we are in bottom row
-            for (var i = 0; i < 3; i++) {
-                this.neighbors.push(false);
-            }
-            if (this.x_index == 0) { //conditions for if we are in the bottom left corner
-                this.neighbors.push(false);
-                this.neighbors.push(false)
-                for (var i = this.y_index - 1; i <= this.y_index; i++) {
-                    for (var j = 0; j <= 1; j++) {
-                        this.neighbors.push(this.board[i][j].alive);
-                    }
-                }
-                return this.neighbors
-            }
-
-            else if (this.x_index == this.board[0].length - 1) { //Checks to see if we are in bottomr right corner
-                for (var i = this.y_index - 1; i <= this.y_index; i++) {
-                    for (var j = this.x_index -1; j <= this.x_index; j++) {
-                        this.neighbors.push(this.board[i][j].alive);
-                    }
-                    this.neighbors.push(false);
-                }
-                return this.neighbors
-            }
-
-            else { //This is for all other elements in the bottom row
-                for (var i = this.y_index - 1; i <= this.y_index; i++) {
-                    for (var j = this.x_index - 1; j <= this.x_index + 1; j++) {
-                        this.neighbors.push(this.board[i][j].alive);
-                    }
-                }
-                return this.neighbors
-            }
-        }
-
-        for (i = this.y_index-1; i<=this.y_index+1;i++) { //All other cases
-            if (x_index == 0) {//Checks to see if we are on left edge
-                this.neighbors.push(false);
-                for (var j = this.x_index; j <= this.x_index + 1; j++) {
-                    this.neighbors.push(this.board[i][j].alive);
-                }   
-            }
-
-            else if (x_index == this.board[0].length -1) {//Checks to see if we are on the right edge
-                for (var j = this.x_index - 1; j <= this.x_index; j++) {
-                    this.neighbors.push(this.board[i][j].alive);
-                }
-                this.neighbors.push(false);   
-            }
-
-            else {
-                for (var j = this.x_index - 1; j <= this.x_index+1; j++) {
-                    this.neighbors.push(this.board[i][j].alive);
-                }
-            }
-        }   
-        return this.neighbors
+    this.get_neighbor_coords = function() {
+        this.neighbor_coords = [];
+        const x = this.x_index;
+        const y = this.y_index;
+        this.neighbor_coords = [[x - 1, y - 1], [x - 1 , y], [x - 1 , y + 1], [x, y-1], [x, y + 1], [x + 1, y-1], [x + 1, y], [x + 1, y + 1]]
         
     }
 
+    this.neighbor_info = function() {
+
+        this.neighbors = [];
+        this.get_neighbor_coords();
+        this.neighbor_coords.forEach(coord => {
+            if (!(this.board[coord[1]] === undefined)) {
+                const board_state = this.board[coord[1]][coord[0]];
+            if (!(board_state === undefined)) {
+                this.neighbors.push(board_state.alive);
+            }
+            console.log(board_state)
+        }
+        });
+
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -238,7 +136,7 @@ function init() { // Creates all the cells and populates a 2d array holding them
 
     for (i = 0; i < vertical_limit; i++) { // This passes in the complete board into each so that they are aware of each other (honestly might just need to do local units)
         for (j = 0; j < horizontal_limit; j++) {
-            board_array[i][j].board = board_array
+            board_array[i][j].board = board_array;
         }
     }
 }
@@ -292,9 +190,7 @@ function CellsToCheckJSON() {
     // Will probalby need to think about making the board its own object so that we can hold all these things
 
 
-
-
-var initial_alive_list = [[0,0], [1,0], [0,1], [3,3], [3,2], [2,3], [8,1], [6,1], [7,1], [1,6], [2,7],[0,8],[1,8],[2,8]]
+var initial_alive_list = [[0,0], [1,0], [0,1], [3,3], [3,2], [2,3], [8,1], [6,1], [7,1], [1,6], [2,7], [0,8], [1,8], [2,8]]
 
 function setBoard(list) { //Will take in a list of length 2 arrays for the positions [x,y]
     for (var element = 0; element < list.length; element++) {
@@ -306,7 +202,7 @@ function boardUpdate() { //pass in the json thats holding the points
     
     for (key in check_json) {//This loop scans the cells surrounding a listed cell
         for (index = 0; index < check_json[key].length; index++) {
-            board_array[check_json[key][index]][key].neighbor_information();
+            board_array[check_json[key][index]][key].neighbor_info();
         }
     }
 
@@ -317,11 +213,11 @@ function boardUpdate() { //pass in the json thats holding the points
 
         for (index = 0; index < check_json[key].length; index++) {
 
+            var alive_count = - 0;
+
             if (board_array[check_json[key][index]][key].alive) {
 
-                var alive_count = - 1;
-
-                for (var i = 0; i < 9; i++) {
+                for (var i = 0; i < board_array[check_json[key][index]][key].neighbors.length; i++) {
 
                     if (board_array[check_json[key][index]][key].neighbors[i]) {
 
@@ -340,9 +236,7 @@ function boardUpdate() { //pass in the json thats holding the points
 
             else {
 
-                var alive_count = 0;
-
-                for (var i = 0; i < 9; i++) {
+                for (var i = 0; i < board_array[check_json[key][index]][key].neighbors.length; i++) {
                     if (board_array[check_json[key][index]][key].neighbors[i]) {
                         alive_count++;
                     }
@@ -376,24 +270,22 @@ function run_conway_game() { //attack to button and this will pause and start th
 }
 
 
-// window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
-//     // var xVal = event.x,
-//     // yVal = event.y;
-//     // console.log(xVal, yVal);
-//     // for (var i = 0; i < vertical_limit; i++) {
-//     //     board_array[i].forEach(function(element) {
-//     //         if (element.x <= xVal && xVal <= element.x + element.width && element.y <= yVal && yVal <= element.y + element.height) {
-//     //             console.log(element.x_index, element.y_index, element.alive);
-//     //             element.toggle();
-//     //             element.neighbor_information();
-//     //             console.log(element.neighbors);
-//     //         }
-//     //     });
-//     // }
-//     boardUpdate();
-//     console.log(check_json);
-
-// }, false);
+window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
+    var xVal = event.x,
+    yVal = event.y;
+    console.log(xVal, yVal);
+    for (var i = 0; i < vertical_limit; i++) {
+        board_array[i].forEach(function(element) {
+            if (element.x <= xVal && xVal <= element.x + element.width && element.y <= yVal && yVal <= element.y + element.height) {
+                console.log(element.x_index, element.y_index, element.alive);
+                //element.toggle();
+                element.neighbor_info();
+                console.log(element.neighbors);
+            }
+        });
+    }
+    
+}, false);
 
 
 
