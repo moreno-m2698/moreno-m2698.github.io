@@ -4,3 +4,8 @@ canvas {
   body {
     margin: 0;
   }
+
+  .bottom-div {
+    display: flex;
+    flex-direction: row;
+  }

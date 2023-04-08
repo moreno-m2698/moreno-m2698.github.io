@@ -5,15 +5,21 @@
 </head>
 <body>
 
-<canvas></canvas>
-<script src="conway.js"></script>
-<div>
-    <button onclick="boardUpdate()">Step</button>
-</div>
-<h1>Welcome to my website</h1>
+    <canvas></canvas>
+    <script src="conway.js"></script>
+    <div class="bottom-div">
+        <h1>Michael's Game of Life</h1>
+        <div>
+            <button onclick="boardUpdate()">Step</button>
+            <button onclick="!isRunning">Run</button>
+        </div>
+        <label for="dropdown">Select a value:</label>
+            <select id="dropdown" onchange="setInitials()">
+            <option value="Glider and Oscillator">Glider and Oscillator</option>
+            <option value="Gosper Glider Gun">Gosper Glider Gun</option>
+        </select>
+    <div>
 
-<p>Hello World</p>
-<div id="myDiv"></div>
 
 </body>
 
