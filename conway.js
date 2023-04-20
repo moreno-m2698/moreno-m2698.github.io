@@ -141,40 +141,43 @@ var check_json = {};
 }
 */
 
-function CellsToCheckJSON() {
-    for (i = 0; i < vertical_limit; i++) {
-        board_array[i].forEach(function(element) {
-            if (element.alive) { //checks if cell is alive
-                for (let y = element.y_index - 1; y <= element.y_index +1; y++) {
-                    for(let x = element.x_index - 1; x <= element.x_index + 1; x++) {
-                        if ( x >= 0 && x < horizontal_limit && y >= 0 && y < vertical_limit){ //ensures that we dont include cells that dont exist outside the bounds of the sheet
-                            if (!(x in check_json)) {
-                                check_json[x] = [y];    
-                            }
-                            else {
-                                isHeld = false;
-                                for(let j = 0; j < check_json[x].length; j++) {
-                                    if (check_json[x][j]==y) {
-                                        isHeld = true;
-                                        break
+function cellAwareness(x, y) {
 
-                                    }
-                                }
-                                if (!isHeld) {
-                                    check_json[x].push(y);
-                                }
+        if (x >= 0 && x < horizontal_limit && y >= 0 && y < vertical_limit) {
+            if (!(x in check_json)) {
+                check_json[x] = [y];    
+            }
+            else {
+                isHeld = false;
+                for(let j = 0; j < check_json[x].length; j++) {
+                    if (check_json[x][j]==y) {
+                        isHeld = true;
+                        break
 
-                            }
-                        }
-                       
                     }
                 }
+                if (!isHeld) {
+                    check_json[x].push(y);
+                }
+            }
+        }
+}
+
+
+function newCellsToCheck() {
+    board_array.forEach(function(row) {
+        row.forEach(function(element) {
+            if (element.alive) {
+                let queue = board_array[element.y_index][element.x_index].get_neighbor_coords(element.x_index,element.y_index);
+                queue.push([element.x_index,element.y_index]);
+                queue.forEach(function(coord) {
+                    cellAwareness(coord[0],coord[1]);
+                })
             }
         })
-
-    }
-    
+    }) 
 }
+
 
 var initial_alive_list = [[0,0], [1,0], [0,1], [3,3], [3,2], [2,3], [8,1], [6,1], [7,1], [1,6], [2,7], [0,8], [1,8], [2,8]]
 
@@ -209,6 +212,8 @@ function boardUpdate() { //pass in the json thats holding the points
     }
 
     //If this borks its likely how its referencing in neighbors and will create loop just for updating board
+    let cellsToMask=[];
+    let cellsToDelete=[];
 
     for(key in check_json) {
 
@@ -230,12 +235,11 @@ function boardUpdate() { //pass in the json thats holding the points
                 if (alive_count < 2 || alive_count > 3) {
 
                     board_array[check_json[key][index]][key].alive = false;
-                    //board_array[check_json[key][index]][key].update();
 
                 }
             }
 
-            else {
+            else {//dead cell logic
 
                 for (let i = 0; i < board_array[check_json[key][index]][key].neighbors.length; i++) {
                     if (board_array[check_json[key][index]][key].neighbors[i]) {
@@ -245,22 +249,41 @@ function boardUpdate() { //pass in the json thats holding the points
 
                 if(alive_count == 3) {
                     board_array[check_json[key][index]][key].alive = true;
-                    //board_array[check_json[key][index]][key].update();
+                    cellsToMask.push([parseInt(key),check_json[key][index]])
+
+                }
+                else {
+                    cellsToDelete.push([parseInt(key),check_json[key][index]])
+
                 }
 
             }
         }
     }
 
-    for (i = 0; i < vertical_limit; i++) {
-        for (j = 0; j < horizontal_limit; j++) {
-            board_array[i][j].update();
+
+    cellsToDelete.forEach( function(doubleDeadCoord) {
+        let index = check_json[doubleDeadCoord[0]].indexOf(doubleDeadCoord[1]);
+        if (index > -1) {
+            check_json[doubleDeadCoord[0]].splice(index, 1);
         }
-    }
+    })
 
 
-    check_json = {};
-    CellsToCheckJSON();
+
+    cellsToMask.forEach( function(newAliveCoord) { 
+        let holder=board_array[newAliveCoord[1]][newAliveCoord[0]].get_neighbor_coords(newAliveCoord[0],newAliveCoord[1]);
+        holder.push(newAliveCoord);
+        holder.forEach( function(coord) {
+            cellAwareness(coord[0],coord[1]);
+        })
+
+    })
+
+    //Currently has issues adding new keys to create more coords
+
+
+    console.log(check_json)
 
 }
 var isRunning = false;
@@ -305,7 +328,7 @@ init();
 
 //Need to lock the order of these functions into the pause/play button
 setBoard(initial_alive_list);
-CellsToCheckJSON();
+newCellsToCheck();
 
-
+console.log(check_json)
 animate();
