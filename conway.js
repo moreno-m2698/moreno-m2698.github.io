@@ -280,19 +280,10 @@ function boardUpdate() { //pass in the json thats holding the points
 
     })
 
-    //Currently has issues adding new keys to create more coords
-
 
     console.log(check_json)
 
 }
-var isRunning = false;
-function run_conway_game() { //attack to button and this will pause and start the application
-    isRunning = !isRunning;
-}
-
-
-
 
 window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
     let xVal = event.x + this.scrollX;
@@ -311,18 +302,48 @@ window.addEventListener('click', function(event) { //This is what allows us to c
     
 }, false);
 
+var isRunning = false;
+function run_conway_game() { //attack to button and this will pause and start the application
+    isRunning = !isRunning;
 
+}
 
-function animate() { //requestAnimationFrame seems to be used for smooth animations but this isnt an issue for now since we are only turning cells on/off
-                    //Might try a more analog approach and see if js has a wait function like python and have a loop work over that
-    requestAnimationFrame(animate);
-        context.clearRect(0, 0, innerWidth, innerHeight);
-        for (i = 0; i < vertical_limit; i++) {
-            for (j = 0; j < horizontal_limit; j++) {
-                board_array[i][j].update();
+// function animate() { //requestAnimationFrame seems to be used for smooth animations but this isnt an issue for now since we are only turning cells on/off
+//                     //Might try a more analog approach and see if js has a wait function like python and have a loop work over that
+//     requestAnimationFrame(animate);
+//     if (isRunning) {
+//         context.clearRect(0, 0, innerWidth, innerHeight);
+//         for (i = 0; i < vertical_limit; i++) {
+//             for (j = 0; j < horizontal_limit; j++) {
+//                 board_array[i][j].update();
+//             }
+//         }
+//     }
+// }
+var then = Date.now()
+
+function animate2() {
+    window.requestAnimationFrame(animate2);
+    let now = Date.now();
+    elapsed = now - then;
+    
+    if (elapsed > 1500) {
+        then = now - (elapsed % 1500)
+
+        if (isRunning) {
+            
+            context.clearRect(0, 0, innerWidth, innerHeight);
+            for (i = 0; i < vertical_limit; i++) {
+                for (j = 0; j < horizontal_limit; j++) {
+                    board_array[i][j].update();
+                }
             }
         }
+
+    }
 }
+
+
 
 init();
 
@@ -331,4 +352,4 @@ setBoard(initial_alive_list);
 newCellsToCheck();
 
 console.log(check_json)
-animate();
+animate2();
