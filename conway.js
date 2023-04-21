@@ -163,7 +163,7 @@ function cellAwareness(x, y) {
 }
 
 
-function newCellsToCheck() {
+function createCheckJSON() {
     board_array.forEach(function(row) {
         row.forEach(function(element) {
             if (element.alive) {
@@ -184,6 +184,7 @@ function setBoard(list) { //Will take in a list of length 2 arrays for the posit
     for (let element = 0; element < list.length; element++) {
         board_array[list[element][1]][list[element][0]].alive = true;
     }
+
 }
 
 function setInitials() {
@@ -191,13 +192,16 @@ function setInitials() {
         "Glider and Oscillator": [[0,0], [1,0], [0,1], [3,3], [3,2], [2,3], [8,1], [6,1], [7,1], [1,6], [2,7], [0,8], [1,8], [2,8]],
         "Gosper Glider Gun": [  [0,4], [1,4], [0,5], [1,5],
         [10,4], [10,5], [10,6], [11,3], [11,7], [12,2], [12,8], [13,2], [13,8], [14,5], [15,3], [15,7], [16,4], [16,5], [16,6], [17,5], [20,2], [20,3], [20,4], [21,2], [21,3], [21,4], [22,1], [22,5], [24,0], [24,1], [24,5], [24,6], [34,2], [34,3], [35,2], [35,3]
-      ]
+        ]
     }
     const selectedValue = document.getElementById("dropdown").value;
 
 
     board_array.forEach( (row) => row.forEach( (cell) => cell.alive = false));
     setBoard(mappingJson[selectedValue]);
+    check_json= {};
+    createCheckJSON();
+    animate();
 
 }
 
@@ -298,6 +302,7 @@ window.addEventListener('click', function(event) { //This is what allows us to c
         let clickedCell = board_array[row][col];
 
         clickedCell.toggle();
+        cellAwareness(row, col);
     }
     
 }, false);
@@ -305,18 +310,18 @@ window.addEventListener('click', function(event) { //This is what allows us to c
 var isRunning = false;
 function run_conway_game() { //attack to button and this will pause and start the application
     isRunning = !isRunning;
-
 }
 
 var then = Date.now()
 
 function animate() {
-    window.requestAnimationFrame(animate2);
+    window.requestAnimationFrame(animate);
+    const fps = 400;
     let now = Date.now();
     elapsed = now - then;
     
-    if (elapsed > 500) {
-        then = now - (elapsed % 500)
+    if (elapsed > fps) {
+        then = now - (elapsed % fps)
 
         if (isRunning) {
 
@@ -332,7 +337,10 @@ function animate() {
     }
 }
 
+//Need to figure out what happened to the glider gun
+//Need to figure out how to make toggle actually add values to json and how to have them read
+
 init();
-newCellsToCheck();
+createCheckJSON();
 
 animate();
