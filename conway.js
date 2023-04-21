@@ -47,40 +47,38 @@ function ConwayUnit(x, y, squareLength, x_index, y_index) {
     //list of booleans
     this.neighbors = [];
     
-    this.draw = function() {
-        context.fillStyle = "#F2F2F2"; //Creates rectangle fill
-        context.fillRect(this.x, this.y, this.width, this.height);
+    this.draw =  function() {
+        if (this.alive) {
+            context.fillStyle = "#F2F2F2"; //Creates rectangle fill
+        }
 
-        context.strokeStyle="#BFBFBF" //Creates rectangle outline
+        else {
+            context.fillStyle = "#262626"; //Creates rectangle fill    
+        }
+
+        context.fillRect(this.x, this.y, this.width, this.height);
+        context.strokeStyle = '#BFBFBF';
         context.lineWidth = .1;
         context.strokeRect(this.x, this.y, this.width, this.height);
-
         context.stroke();
     }
-    this.update = function() { //checks if unit is alive and will update its physical appearance accordingly
-        context.clearRect(this.x, this.y, this.width, this.height);
-        if (this.alive) {
-            this.draw();
-        }
-        else {
-            context.fillStyle = "#262626"; //Creates rectangle fill
-            context.fillRect(this.x, this.y, this.width, this.height);
 
-            context.strokeStyle = '#BFBFBF';
-            context.lineWidth = .1;
-            context.strokeRect(this.x, this.y, this.width, this.height);
-            context.stroke();
-        }
+    this.clear = function() {
+        context.clearRect(this.x, this.y, this.width, this.height);
+    }
+
+    this.update = function() {
+        this.clear();
+        this.draw();
 
     }
-    this.toggle = function() { //This function will allow us to choice the cells starting state
+    this.toggle = function() {
         this.alive = !this.alive;
         this.update();
     }
     
-    //for vertical senscing need to be mindful of how much space above html elements take
-        //another note, there seems to be some dependence on where the browser is currently located (observed when scrolling down webpage, the function doesnt work)
-
+    //for vertical sensing need to be mindful of how much space above html elements take
+    
     this.get_neighbor_coords = function(x, y) {
         return [[x - 1, y - 1], [x - 1 , y], [x - 1 , y + 1], [x, y-1], [x, y + 1], [x + 1, y-1], [x + 1, y], [x + 1, y + 1]];
     }
@@ -126,10 +124,11 @@ function init() { // Creates all the cells and populates a 2d array holding them
         }
 
     }
-
+    setBoard(initial_alive_list);
     for (i = 0; i < vertical_limit; i++) { // This passes in the compvare board into each so that they are aware of each other (honestly might just need to do local units)
         for (j = 0; j < horizontal_limit; j++) {
             board_array[i][j].board = board_array;
+            board_array[i][j].update();
         }
     }
 }
@@ -203,15 +202,13 @@ function setInitials() {
 }
 
 
-function boardUpdate() { //pass in the json thats holding the points
+function boardUpdate() {
     
     for (key in check_json) {//This loop scans the cells surrounding a listed cell
         for (index = 0; index < check_json[key].length; index++) {
             board_array[check_json[key][index]][key].neighbor_info();
         }
     }
-
-    //If this borks its likely how its referencing in neighbors and will create loop just for updating board
     let cellsToMask=[];
     let cellsToDelete=[];
 
@@ -235,6 +232,7 @@ function boardUpdate() { //pass in the json thats holding the points
                 if (alive_count < 2 || alive_count > 3) {
 
                     board_array[check_json[key][index]][key].alive = false;
+                    board_array[check_json[key][index]][key].update();
 
                 }
             }
@@ -249,6 +247,7 @@ function boardUpdate() { //pass in the json thats holding the points
 
                 if(alive_count == 3) {
                     board_array[check_json[key][index]][key].alive = true;
+                    board_array[check_json[key][index]][key].update();
                     cellsToMask.push([parseInt(key),check_json[key][index]])
 
                 }
@@ -282,23 +281,24 @@ function boardUpdate() { //pass in the json thats holding the points
 
 
     console.log(check_json)
-
 }
 
 window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
-    let xVal = event.x + this.scrollX;
-    let yVal = event.y + this.scrollY;
+    
+    if (!isRunning) {
+        let xVal = event.x + this.scrollX;
+        let yVal = event.y + this.scrollY;
 
-    const relativeY = board_array[0][0].y
-    const relativeX = board_array[0][0].x
+        const relativeY = board_array[0][0].y
+        const relativeX = board_array[0][0].x
 
-    let row = Math.floor((yVal - relativeY) / squareLength);
-    let col = Math.floor((xVal - relativeX) / squareLength);
+        let row = Math.floor((yVal - relativeY) / squareLength);
+        let col = Math.floor((xVal - relativeX) / squareLength);
 
-    let clickedCell = board_array[row][col];
+        let clickedCell = board_array[row][col];
 
-    clickedCell.toggle();
-
+        clickedCell.toggle();
+    }
     
 }, false);
 
@@ -308,31 +308,20 @@ function run_conway_game() { //attack to button and this will pause and start th
 
 }
 
-// function animate() { //requestAnimationFrame seems to be used for smooth animations but this isnt an issue for now since we are only turning cells on/off
-//                     //Might try a more analog approach and see if js has a wait function like python and have a loop work over that
-//     requestAnimationFrame(animate);
-//     if (isRunning) {
-//         context.clearRect(0, 0, innerWidth, innerHeight);
-//         for (i = 0; i < vertical_limit; i++) {
-//             for (j = 0; j < horizontal_limit; j++) {
-//                 board_array[i][j].update();
-//             }
-//         }
-//     }
-// }
 var then = Date.now()
 
-function animate2() {
+function animate() {
     window.requestAnimationFrame(animate2);
     let now = Date.now();
     elapsed = now - then;
     
-    if (elapsed > 1500) {
-        then = now - (elapsed % 1500)
+    if (elapsed > 500) {
+        then = now - (elapsed % 500)
 
         if (isRunning) {
-            
-            context.clearRect(0, 0, innerWidth, innerHeight);
+
+            boardUpdate();
+
             for (i = 0; i < vertical_limit; i++) {
                 for (j = 0; j < horizontal_limit; j++) {
                     board_array[i][j].update();
@@ -343,13 +332,7 @@ function animate2() {
     }
 }
 
-
-
 init();
-
-//Need to lock the order of these functions into the pause/play button
-setBoard(initial_alive_list);
 newCellsToCheck();
 
-console.log(check_json)
-animate2();
+animate();
