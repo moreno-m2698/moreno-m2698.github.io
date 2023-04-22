@@ -178,7 +178,9 @@ function createCheckJSON() {
 }
 
 
-var initial_alive_list = [[0,0], [1,0], [0,1], [3,3], [3,2], [2,3], [8,1], [6,1], [7,1], [1,6], [2,7], [0,8], [1,8], [2,8]]
+var initial_alive_list = [[0,4], [1,4], [0,5], [1,5],
+[10,4], [10,5], [10,6], [11,3], [11,7], [12,2], [12,8], [13,2], [13,8], [14,5], [15,3], [15,7], [16,4], [16,5], [16,6], [17,5], [20,2], [20,3], [20,4], [21,2], [21,3], [21,4], [22,1], [22,5], [24,0], [24,1], [24,5], [24,6], [34,2], [34,3], [35,2], [35,3]
+]
 
 function setBoard(list) { //Will take in a list of length 2 arrays for the positions [x,y]
     for (let element = 0; element < list.length; element++) {
@@ -213,8 +215,7 @@ function boardUpdate() {
             board_array[check_json[key][index]][key].neighbor_info();
         }
     }
-    let cellsToMask=[];
-    let cellsToDelete=[];
+
 
     for(key in check_json) {
 
@@ -252,37 +253,14 @@ function boardUpdate() {
                 if(alive_count == 3) {
                     board_array[check_json[key][index]][key].alive = true;
                     board_array[check_json[key][index]][key].update();
-                    cellsToMask.push([parseInt(key),check_json[key][index]])
-
-                }
-                else {
-                    cellsToDelete.push([parseInt(key),check_json[key][index]])
-
                 }
 
             }
         }
     }
 
-
-    cellsToDelete.forEach( function(doubleDeadCoord) {
-        let index = check_json[doubleDeadCoord[0]].indexOf(doubleDeadCoord[1]);
-        if (index > -1) {
-            check_json[doubleDeadCoord[0]].splice(index, 1);
-        }
-    })
-
-
-
-    cellsToMask.forEach( function(newAliveCoord) { 
-        let holder=board_array[newAliveCoord[1]][newAliveCoord[0]].get_neighbor_coords(newAliveCoord[0],newAliveCoord[1]);
-        holder.push(newAliveCoord);
-        holder.forEach( function(coord) {
-            cellAwareness(coord[0],coord[1]);
-        })
-
-    })
-
+    check_json={};
+    createCheckJSON();
 
     console.log(check_json)
 }
@@ -303,6 +281,7 @@ window.addEventListener('click', function(event) { //This is what allows us to c
 
         clickedCell.toggle();
         cellAwareness(row, col);
+
     }
     
 }, false);
@@ -316,7 +295,7 @@ var then = Date.now()
 
 function animate() {
     window.requestAnimationFrame(animate);
-    const fps = 400;
+    const fps = 100;
     let now = Date.now();
     elapsed = now - then;
     
@@ -336,6 +315,15 @@ function animate() {
 
     }
 }
+
+document.addEventListener('keydown', function(event) {
+    if(event.code === 'Space') {
+      run_conway_game()
+    }
+    if(event.code === 'KeyE') {
+        boardUpdate();
+    }
+});
 
 //Need to figure out what happened to the glider gun
 //Need to figure out how to make toggle actually add values to json and how to have them read
