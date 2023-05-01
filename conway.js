@@ -1,8 +1,8 @@
 var canvas = document.querySelector('canvas'); //Allows interaction with html canvas 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight; 
-console.log(canvas.width) //1920
-console.log(canvas.height) //929
+
+var headerHeight = (document.getElementById('mainHeader').offsetHeight)
 var context = canvas.getContext('2d');
 
 var mouse = {
@@ -274,7 +274,7 @@ window.addEventListener('click', function(event) { //This is what allows us to c
         const relativeY = board_array[0][0].y
         const relativeX = board_array[0][0].x
 
-        let row = Math.floor((yVal - relativeY) / squareLength);
+        let row = Math.floor((yVal - relativeY - headerHeight - squareLength) / squareLength);
         let col = Math.floor((xVal - relativeX) / squareLength);
 
         let clickedCell = board_array[row][col];
