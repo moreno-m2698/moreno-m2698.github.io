@@ -6,8 +6,8 @@ var headerHeight = (document.getElementById('mainHeader').offsetHeight)
 var contextLayer1 = canvas1.getContext('2d');
 
 var canvas2 = document.getElementById('layer2');
-canvas2.width = canvas1.width;
-canvas2.height = canvas1.height;
+canvas2.width = window.innerWidth;
+canvas2.height = window.innerHeight;
 var contextLayer2 = canvas2.getContext('2d')
 
 
@@ -21,6 +21,18 @@ window.addEventListener('mousemove', function(event) {
     mouse.y = event.y;
 
 })
+
+function boarder() {
+    let boarderSize = 3
+    contextLayer2.fillStyle = "rgba(255,82,82,1)";
+    contextLayer2.fillRect(0, 0, canvas2.width, canvas2.height);
+    contextLayer2.stroke();
+    contextLayer2.clearRect(boarderSize , boarderSize, canvas2.width - 2 * boarderSize, canvas2.height - 2 * boarderSize);
+    contextLayer2.stroke();
+}
+function boarderClear() {
+    contextLayer2.clearRect(0, 0, canvas2.width, canvas2.height);
+}
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -274,7 +286,7 @@ function boardUpdate() {
 
 window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
     
-    if (!isRunning) {
+    if (!(!toggleOn || isRunning)) {
         let xVal = event.x + this.scrollX;
         let yVal = event.y + this.scrollY;
 
@@ -294,6 +306,7 @@ window.addEventListener('click', function(event) { //This is what allows us to c
 }, false);
 
 var isRunning = false;
+var toggleOn = true;
 function run_conway_game() { //attack to button and this will pause and start the application
     isRunning = !isRunning;
 }
@@ -322,6 +335,15 @@ function animate() {
 
     }
 }
+function toggleFunctionAnimation() {
+    window.requestAnimationFrame(toggleFunctionAnimation);
+    if (toggleOn) {
+        boarder();
+    }
+    else {
+        boarderClear();
+    }
+}
 
 document.addEventListener('keydown', function(event) {
     if(event.code === 'Space') {
@@ -330,6 +352,9 @@ document.addEventListener('keydown', function(event) {
     if(event.code === 'KeyE') {
         boardUpdate();
     }
+    if(event.code === 'KeyQ') {
+        toggleOn = !toggleOn;
+    }
 });
 
 //Need to figure out what happened to the glider gun
@@ -337,5 +362,5 @@ document.addEventListener('keydown', function(event) {
 
 init();
 createCheckJSON();
-
 animate();
+toggleFunctionAnimation();
