@@ -1,9 +1,15 @@
-var canvas = document.querySelector('canvas'); //Allows interaction with html canvas 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight; 
+var canvas1 = document.getElementById('layer1'); //Allows interaction with html canvas 
+canvas1.width = window.innerWidth;
+canvas1.height = window.innerHeight; 
 
 var headerHeight = (document.getElementById('mainHeader').offsetHeight)
-var context = canvas.getContext('2d');
+var contextLayer1 = canvas1.getContext('2d');
+
+var canvas2 = document.getElementById('layer2');
+canvas2.width = canvas1.width;
+canvas2.height = canvas1.height;
+var contextLayer2 = canvas2.getContext('2d')
+
 
 var mouse = {
     x: undefined,
@@ -49,22 +55,22 @@ function ConwayUnit(x, y, squareLength, x_index, y_index) {
     
     this.draw =  function() {
         if (this.alive) {
-            context.fillStyle = "#F2F2F2"; //Creates rectangle fill
+            contextLayer1.fillStyle = "#F2F2F2"; //Creates rectangle fill
         }
 
         else {
-            context.fillStyle = "#262626"; //Creates rectangle fill    
+            contextLayer1.fillStyle = "#262626"; //Creates rectangle fill    
         }
 
-        context.fillRect(this.x, this.y, this.width, this.height);
-        context.strokeStyle = '#BFBFBF';
-        context.lineWidth = .1;
-        context.strokeRect(this.x, this.y, this.width, this.height);
-        context.stroke();
+        contextLayer1.fillRect(this.x, this.y, this.width, this.height);
+        contextLayer1.strokeStyle = '#BFBFBF';
+        contextLayer1.lineWidth = .1;
+        contextLayer1.strokeRect(this.x, this.y, this.width, this.height);
+        contextLayer1.stroke();
     }
 
     this.clear = function() {
-        context.clearRect(this.x, this.y, this.width, this.height);
+        contextLayer1.clearRect(this.x, this.y, this.width, this.height);
     }
 
     this.update = function() {
@@ -206,6 +212,7 @@ function setInitials() {
     animate();
 
 }
+
 
 
 function boardUpdate() {
