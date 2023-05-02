@@ -22,6 +22,11 @@ canvas1.height = squareLength * vertical_limit;
 var headerHeight = (document.getElementById('mainHeader').offsetHeight)
 var contextLayer1 = canvas1.getContext('2d');
 
+var canvas2 = document.getElementById('layer2'); //Allows interaction with html canvas 
+canvas2.width = window.innerWidth;
+canvas2.height = squareLength * vertical_limit; 
+var contextLayer2 = canvas2.getContext('2d');
+
 var mouse = {
     x: undefined,
     y: undefined
@@ -32,6 +37,8 @@ window.addEventListener('mousemove', function(event) {
     mouse.y = event.y;
 
 })
+
+
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -47,7 +54,7 @@ function ConwayUnit(x, y, squareLength, x_index, y_index) {
     //list of booleans
     this.neighbors = [];
     
-    this.draw =  function() {
+    this.drawBody =  function() {
         if (this.alive) {
             contextLayer1.fillStyle = "#F2F2F2"; //Creates rectangle fill
         }
@@ -57,10 +64,14 @@ function ConwayUnit(x, y, squareLength, x_index, y_index) {
         }
 
         contextLayer1.fillRect(this.x, this.y, this.width, this.height);
-        contextLayer1.strokeStyle = '#BFBFBF';
-        contextLayer1.lineWidth = .1;
-        contextLayer1.strokeRect(this.x, this.y, this.width, this.height);
+
         contextLayer1.stroke();
+    }
+    this.drawOutline = function() {
+        contextLayer2.lineWidth = .1;
+        contextLayer2.strokeStyle = '#BFBFBF';
+        contextLayer2.strokeRect(this.x, this.y, this.width, this.height);
+        contextLayer2.stroke();
     }
 
     this.clear = function() {
@@ -69,15 +80,12 @@ function ConwayUnit(x, y, squareLength, x_index, y_index) {
 
     this.update = function() {
         this.clear();
-        this.draw();
-
+        this.drawBody();
     }
     this.toggle = function() {
         this.alive = !this.alive;
         this.update();
     }
-    
-    //for vertical sensing need to be mindful of how much space above html elements take
     
     this.get_neighbor_coords = function(x, y) {
         return [[x - 1, y - 1], [x - 1 , y], [x - 1 , y + 1], [x, y-1], [x, y + 1], [x + 1, y-1], [x + 1, y], [x + 1, y + 1]];
@@ -128,6 +136,7 @@ function init() { // Creates all the cells and populates a 2d array holding them
     for (i = 0; i < vertical_limit; i++) { // This passes in the compvare board into each so that they are aware of each other (honestly might just need to do local units)
         for (j = 0; j < horizontal_limit; j++) {
             board_array[i][j].board = board_array;
+            board_array[i][j].drawOutline();
             board_array[i][j].update();
         }
     }
@@ -339,23 +348,23 @@ document.addEventListener('keydown', function(event) {
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 
-var canvas2 = document.getElementById('layer2');
-canvas2.width = window.innerWidth;
-canvas2.height = squareLength * vertical_limit;
-var contextLayer2 = canvas2.getContext('2d')
+var canvas3 = document.getElementById('layer3');
+canvas3.width = window.innerWidth;
+canvas3.height = squareLength * vertical_limit;
+var contextLayer3 = canvas3.getContext('2d')
 
 var toggleOn = true;
 
 function boarder() {
     let boarderSize = 3
-    contextLayer2.fillStyle = "rgba(255,82,82,1)";
-    contextLayer2.fillRect(0, 0, canvas2.width, canvas2.height);
-    contextLayer2.stroke();
-    contextLayer2.clearRect(boarderSize , boarderSize, canvas2.width - 2 * boarderSize, canvas2.height - 2 * boarderSize);
-    contextLayer2.stroke();
+    contextLayer3.fillStyle = "rgba(255,82,82,1)";
+    contextLayer3.fillRect(0, 0, canvas3.width, canvas3.height);
+    contextLayer3.stroke();
+    contextLayer3.clearRect(boarderSize , boarderSize, canvas3.width - 2 * boarderSize, canvas3.height - 2 * boarderSize);
+    contextLayer3.stroke();
 }
 function boarderClear() {
-    contextLayer2.clearRect(0, 0, canvas2.width, canvas2.height);
+    contextLayer3.clearRect(0, 0, canvas3.width, canvas3.height);
 }
 
 function toggleFunctionAnimation() {
