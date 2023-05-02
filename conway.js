@@ -194,6 +194,7 @@ var initial_alive_list = [[0,4], [1,4], [0,5], [1,5],
 function setBoard(list) { //Will take in a list of length 2 arrays for the positions [x,y]
     for (let element = 0; element < list.length; element++) {
         board_array[list[element][1]][list[element][0]].alive = true;
+        board_array[list[element][1]][list[element][0]].update();
     }
 
 }
@@ -208,12 +209,13 @@ function setInitials() {
     const selectedValue = document.getElementById("dropdown").value;
 
 
-    board_array.forEach( (row) => row.forEach( (cell) => cell.alive = false));
+    board_array.forEach( (row) => row.forEach( function(cell) {
+        cell.alive = false
+        cell.update();
+    }));
     setBoard(mappingJson[selectedValue]);
     check_json= {};
     createCheckJSON();
-    animate();
-
 }
 
 
