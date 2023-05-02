@@ -322,13 +322,18 @@ function animate() {
 
 document.addEventListener('keydown', function(event) {
     if(event.code === 'Space') {
-      run_conway_game()
+      run_conway_game();
+      if (isRunning) {
+        toggleOn = false;
+      }
     }
     if(event.code === 'KeyE') {
         boardUpdate();
     }
     if(event.code === 'KeyQ') {
-        toggleOn = !toggleOn;
+        if (!isRunning) {
+            toggleOn = !toggleOn;
+        }
     }
 });
 
