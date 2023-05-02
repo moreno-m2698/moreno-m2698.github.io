@@ -273,8 +273,6 @@ function boardUpdate() {
 
     check_json={};
     createCheckJSON();
-
-    console.log(check_json)
 }
 
 window.addEventListener('click', function(event) { //This is what allows us to click on the cells to toggle their state
