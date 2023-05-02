@@ -132,7 +132,6 @@ function init() { // Creates all the cells and populates a 2d array holding them
         }
 
     }
-    setBoard(initial_alive_list);
     for (i = 0; i < vertical_limit; i++) { // This passes in the compvare board into each so that they are aware of each other (honestly might just need to do local units)
         for (j = 0; j < horizontal_limit; j++) {
             board_array[i][j].board = board_array;
@@ -201,6 +200,7 @@ function setBoard(list) { //Will take in a list of length 2 arrays for the posit
 
 function setInitials() {
     const mappingJson = {
+        "Blank": [],
         "Glider and Oscillator": [[0,0], [1,0], [0,1], [3,3], [3,2], [2,3], [8,1], [6,1], [7,1], [1,6], [2,7], [0,8], [1,8], [2,8]],
         "Gosper Glider Gun": [  [0,4], [1,4], [0,5], [1,5],
         [10,4], [10,5], [10,6], [11,3], [11,7], [12,2], [12,8], [13,2], [13,8], [14,5], [15,3], [15,7], [16,4], [16,5], [16,6], [17,5], [20,2], [20,3], [20,4], [21,2], [21,3], [21,4], [22,1], [22,5], [24,0], [24,1], [24,5], [24,6], [34,2], [34,3], [35,2], [35,3]
