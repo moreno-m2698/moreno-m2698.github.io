@@ -1,6 +1,23 @@
+var relative_start = { //This will be used to position the conway units during initial testing
+    x: undefined,
+    y: undefined
+}
+relative_start.x = 0;
+relative_start.y = 0;
+var squareLength = 20;
+
+
+//These control how many units are in the grids vert/hor
+var vertical_limit = 46, //Will cut off bottom row for now
+horizontal_limit = 96;
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+//These are initial conditions that can be changed for testing purposes
+
 var canvas1 = document.getElementById('layer1'); //Allows interaction with html canvas 
 canvas1.width = window.innerWidth;
-canvas1.height = window.innerHeight; 
+canvas1.height = squareLength * vertical_limit; 
 
 var headerHeight = (document.getElementById('mainHeader').offsetHeight)
 var contextLayer1 = canvas1.getContext('2d');
@@ -15,25 +32,6 @@ window.addEventListener('mousemove', function(event) {
     mouse.y = event.y;
 
 })
-
-
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-//These are initial conditions that can be changed for testing purposes
-
-var relative_start = { //This will be used to position the conway units during initial testing
-    x: undefined,
-    y: undefined
-}
-relative_start.x = 0;
-relative_start.y = 0;
-var squareLength = 20;
-
-
-//These control how many units are in the grids vert/hor
-var vertical_limit = 47, //Will cut off bottom row for now
-horizontal_limit = 96;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -343,7 +341,7 @@ document.addEventListener('keydown', function(event) {
 
 var canvas2 = document.getElementById('layer2');
 canvas2.width = window.innerWidth;
-canvas2.height = window.innerHeight;
+canvas2.height = squareLength * vertical_limit;
 var contextLayer2 = canvas2.getContext('2d')
 
 var toggleOn = true;
