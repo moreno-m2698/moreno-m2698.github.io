@@ -13,11 +13,12 @@
     </header>
     
     <div style="position:relative">
-        <canvas id="layer1" style="position:absolute; left: 0; top:0; z-index:0;"></canvas>
+        <canvas id="layer1" style="position:relative; left: 0; top:0; z-index:0;"></canvas>
         <canvas id="layer2" style="position:absolute; left: 0; top:0; z-index:0;"></canvas>
     </div>
     
-    <div class="bottom-div">
+    <script src="conway.js"></script>
+    <div style="position:relative;" class="bottom-div">
         <label for="dropdown">Select a value:</label>
             <select id="dropdown" onchange="setInitials()">
             <option value="Glider and Oscillator">Glider and Oscillator</option>
