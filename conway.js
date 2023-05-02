@@ -319,7 +319,6 @@ function animate() {
     }
 }
 
-
 document.addEventListener('keydown', function(event) {
     if(event.code === 'Space') {
       run_conway_game();
