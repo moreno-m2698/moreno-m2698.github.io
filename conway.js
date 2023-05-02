@@ -292,7 +292,14 @@ window.addEventListener('click', function(event) { //This is what allows us to c
         let clickedCell = board_array[row][col];
 
         clickedCell.toggle();
-        cellAwareness(row, col);
+
+        let queue = clickedCell.get_neighbor_coords(col, row);
+        queue.push([col, row]);
+        queue.forEach(function(coord) {
+            cellAwareness(coord[0],coord[1]);
+        })
+        
+
 
     }
     
