@@ -1,6 +1,6 @@
 # Portfolio Site — Specification
 
-> Refined from `Ideas for a portfolio.md` through clarifying Q&A.
+> Refined from an initial ideas note (removed; see git history) through clarifying Q&A.
 > Purpose: a planning document for identifying features and deciding what to build.
 > Scope: product and feature requirements only. Technical decisions (stack, hosting) are deferred to a separate technical planning phase.
 
