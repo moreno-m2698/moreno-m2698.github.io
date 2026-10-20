@@ -178,6 +178,14 @@ Everything in §6 is in scope for the first launch:
 | Q10 | Repository visibility? | **Public**, which enables free GitHub Pages hosting |
 | Q11 | Styling? | **Plain CSS + Vue `<style scoped>` blocks**; no utility framework |
 | Q13 | "Sections page" from the original ideas? | **Dropped**: not needed |
+| Q14 | Site identity values (name, tagline, contact URLs)? | **One typed file, `content/site.ts`**, with clearly marked placeholders until launch |
+| Q15 | Visual design for the first build? | **Neutral placeholder palette + system font stack** as design tokens; real design applied later by changing tokens |
+| Q16 | Resume PDF before the real one exists? | **Placeholder PDF** at `/resume.pdf` (no personal details), replaced under the same name |
+| Q17 | Mobile navigation? | **All links always visible, wrapping** on narrow screens; no menu button, no JavaScript |
+| Q18 | Breakpoints? | **40rem and 64rem** (`min-width`, mobile-first) |
+| Q19 | Article for testing before real articles exist? | **Test-only sample article** in a fixtures folder; never published |
+| Q20 | Empty states? | Short text ("No articles yet", "No projects yet"); Home's latest-articles section hidden when empty |
+| Q21 | Remember a manual theme choice? | **Yes**, in `localStorage`, applied by a tiny inline script before first paint (allowed by hash in the CSP); without JavaScript the OS setting applies |
 | Q12 | Where does article metadata live? | **In each article's `<head>`** (`<title>` + `<meta>` tags); articles are complete, valid HTML documents; no fixed metadata standard |
 | Q4 | Hosting? | **GitHub Pages** via GitHub Actions (see `constitution.md`) |
 

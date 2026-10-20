@@ -14,6 +14,11 @@ Rules:
 - If work would break a constitution principle, stop and say so. Don't work around it quietly.
 - When a decision is made, update the relevant document (the constitution's version and date, and the spec's decisions log) in the same change.
 
+## Current status
+
+- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), awaiting approval. Start with its **Status** section.
+- **Blockers:** local Node is v19.8.1 (needs **Node 24 LTS**), and **pnpm is not installed**. Nothing can be built until both are fixed.
+
 ## Model usage
 
 Work is delegated to the project subagents in `.claude/agents/`, each of which has its model set:

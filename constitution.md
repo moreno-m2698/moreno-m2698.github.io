@@ -1,6 +1,6 @@
 # Portfolio Constitution
 
-> **Status:** Draft v0.14.0, last amended 2026-10-20. Not yet ratified.
+> **Status:** Draft v0.16.0, last amended 2026-10-20. Not yet ratified.
 > This document sets the non-negotiable principles for building the portfolio site. The spec (`portfolio-spec.md`) says *what* to build; this says *how decisions get made*.
 > **Precedence:** Constitution > Spec > Technical plans > Code. When they conflict, either fix the lower document or amend this one. Never quietly ignore a principle.
 
@@ -66,6 +66,8 @@ Wording: **MUST** is a hard rule, and failing it blocks a merge. **SHOULD** is t
 - The visual design is minimal and typography-led, and it is itself the design showcase.
 - **Styling is plain CSS**: global stylesheets plus `<style scoped>` blocks in Vue single-file components. No utility framework (e.g. Tailwind) and no CSS-in-JS.
 - **Design tokens** (color, type scale, spacing, radii, motion durations) are the single source of truth, defined as CSS custom properties in a global stylesheet. Components MUST NOT hard-code values that a token covers.
+- **Mobile-first CSS.** Base styles (outside any media query) MUST target the smallest screens. Larger layouts are added with `min-width` media queries only. `max-width` queries MUST NOT be used for layout. Breakpoints are **40rem** and **64rem**, defined once in the design tokens file and reused everywhere. (CSS custom properties can't be used inside media queries, so the values are written literally in each query and documented next to the tokens.)
+- Layouts MUST work from a 320px-wide viewport up, with no horizontal scrolling, and content MUST reflow at 400% zoom (WCAG 1.4.10).
 - Component styles SHOULD be scoped. Global CSS is limited to tokens, reset/base styles, themes, and the **article prose stylesheet**. Article HTML is injected content that scoped styles don't reach, so it is styled by one global stylesheet scoped under an article container class (e.g. `.prose`).
 - No UI kit or theme template may dictate the layout. New layouts and components MUST be addable by putting existing pieces together, without rewriting them.
 - Components SHOULD be small, do one job, and be split into presentational and data-loading parts.
@@ -121,6 +123,7 @@ Checks are introduced in two phases so the MVP can launch quickly without giving
 | Search | Client-side over a build-time index of titles, tags and summaries | Proposed |
 | Styling | Plain CSS + Vue `<style scoped>` blocks, with custom-property design tokens | Decided |
 | Fonts | External services such as Google Fonts allowed; downloading at build and self-hosting preferred | Decided |
+| Theme | `prefers-color-scheme` by default via CSS; manual choice stored in `localStorage` and applied by a tiny inline script (CSP hash) before first paint | Decided |
 | Testing | Vitest (unit), Playwright + axe (end-to-end and accessibility) | Proposed |
 | Package manager | **pnpm**, with the lockfile committed; CI installs with `pnpm install --frozen-lockfile` | Decided |
 
