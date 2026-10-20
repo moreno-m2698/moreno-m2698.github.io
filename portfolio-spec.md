@@ -86,6 +86,7 @@ The site should come across as a clean, smooth, professional showcase. **The sit
 
 ### 4.6 Resume
 - **PDF only**: the page displays and/or links to a downloadable PDF
+- The PDF is committed to the repo and served at a stable URL (`/resume.pdf`)
 
 ### 4.7 Custom 404
 - A styled "page not found" page
@@ -97,9 +98,10 @@ The site should come across as a clean, smooth, professional showcase. **The sit
 
 ## 5. Content Authoring
 
-- Articles are written as **Markdown/MDX files in the site's repository**
+- Articles are written as **HTML files in the site's repository** as complete, valid HTML documents (the build takes the `<body>` content and wraps it in the site layout)
 - Publishing workflow: commit and push
-- Project cards are hand-curated content maintained in the repository
+- Project cards are hand-curated content maintained in the repository, as a typed TypeScript data file
+- About page content is written directly in the About page component
 
 ## 6. Feature List
 
@@ -125,7 +127,7 @@ Feature IDs are for referencing during planning. All features are **MVP** (requi
 | F-16 | Syntax-highlighted code blocks | Article |
 | F-17 | Images in articles | Article |
 | F-18 | Diagrams in articles | Article |
-| F-19 | Markdown/MDX authoring in repo | Authoring |
+| F-19 | HTML article authoring in repo | Authoring |
 | F-20 | Resume PDF page / download | Resume |
 | F-21 | Custom 404 page | Global |
 | F-22 | Light/dark mode: follows OS setting by default, with manual toggle | Global |
@@ -150,8 +152,8 @@ Feature IDs are for referencing during planning. All features are **MVP** (requi
 | Browser support | Modern evergreen: latest 2 versions of Chrome, Edge, Firefox, Safari (desktop and mobile) |
 | Analytics | **None** |
 | SEO | Basic SEO + social share previews |
-| Domain | Custom domain, **to be purchased** |
-| Site repository | Private; the portfolio is **not** listed as a project |
+| Domain | Custom domain, **to be purchased**; launch first at `moreno-m2698.github.io/portfolio` and switch when bought |
+| Site repository | **Public**; the portfolio is **not** listed as a project |
 | Timeline | **ASAP**: launch the MVP within weeks, iterate afterward |
 
 ## 9. MVP Scope
@@ -167,16 +169,20 @@ Everything in §6 is in scope for the first launch:
 | # | Question | Decision |
 |---|---|---|
 | Q1 | Project detail pages? | **Cards only**, with a 1–3 sentence summary; deeper detail in the GitHub README |
-| Q2 | Article authoring? | **Markdown/MDX in repo**, commit and push to publish |
-| Q5 | Is the portfolio a showcase project? | **No**: private repo, not listed |
+| Q2 | Article authoring? | **HTML files in repo**, commit and push to publish (changed from Markdown/MDX) |
+| Q5 | Is the portfolio a showcase project? | **No**: not listed (repo is public, see Q10) |
 | Q6 | Visual direction? | **Minimal / clean** |
 | Q7 | Design gallery? | **Dropped**: the site's own design is the showcase |
 | Q8 | Featured projects on Home? | **Removed**: no featured projects section |
 | Q9 | Search scope? | **Titles, tags, and summaries** |
+| Q10 | Repository visibility? | **Public**, which enables free GitHub Pages hosting |
+| Q11 | Styling? | **Plain CSS + Vue `<style scoped>` blocks**; no utility framework |
+| Q13 | "Sections page" from the original ideas? | **Dropped**: not needed |
+| Q12 | Where does article metadata live? | **In each article's `<head>`** (`<title>` + `<meta>` tags); articles are complete, valid HTML documents; no fixed metadata standard |
+| Q4 | Hosting? | **GitHub Pages** via GitHub Actions (see `constitution.md`) |
 
 ## 11. Deferred to Technical Planning
 
 | # | Topic |
 |---|---|
-| Q3 | Tech stack |
-| Q4 | Hosting provider and budget |
+| Q3 | Tech stack: **Vue 3 + Nuxt 4** (static generation), decided; remaining details in `constitution.md` |
