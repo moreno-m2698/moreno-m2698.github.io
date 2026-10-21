@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   modules: ['@nuxt/eslint'],
   devtools: { enabled: true },
   app: { baseURL, head: { htmlAttrs: { lang: 'en' } } },
+  css: ['~/assets/css/tokens.css', '~/assets/css/reset.css', '~/assets/css/base.css', '~/assets/css/prose.css'],
   compatibilityDate: '2026-10-20',
   nitro: { prerender: { crawlLinks: true, failOnError: true } },
   typescript: { strict: true, typeCheck: false, tsConfig: { include: ['../content/**/*'] } },

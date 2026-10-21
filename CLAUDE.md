@@ -16,7 +16,7 @@ Rules:
 
 ## Current status
 
-- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), approved 2026-10-20. Work is on the `milestone-1` branch. **Batch A is done**; Batch B is next. Start with the plan's **Status** section.
+- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), approved 2026-10-20. Work is on the `milestone-1` branch. **Batches A and B are done** (B's build and browser checks run with Batch C); Batch C is next. Start with the plan's **Status** section.
 - **Toolchain:** Node **24 LTS** (v24.22.0, managed with nvm-windows), **pnpm 12** (via Corepack), TypeScript **6.x** (pinned; see the constitution's Technical Baseline).
 - If pnpm shows a Corepack download prompt in a non-interactive shell, set `COREPACK_ENABLE_DOWNLOAD_PROMPT=0`.
 

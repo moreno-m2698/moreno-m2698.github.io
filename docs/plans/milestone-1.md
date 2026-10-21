@@ -3,7 +3,10 @@
 ## Status (2026-10-20): read this first when resuming
 
 - **Plan status: approved by the user on 2026-10-20** (including the pnpm 12 updates).
-- **Progress:** Batch A done on 2026-10-20 (typecheck, lint, validate:html and generate pass; negative article checks verified). Changes made during A: TypeScript pinned to 6.x, `@types/node@^24` added, the `fileURLToPath` import moved to C1. Next: Batch B.
+- **Progress:** Batch A done on 2026-10-20 (typecheck, lint, validate:html and generate pass; negative article checks verified). Changes made during A: TypeScript pinned to 6.x, `@types/node@^24` added, the `fileURLToPath` import moved to C1.
+- **Batch B written and partly verified on 2026-10-20.** typecheck, lint and validate:html pass. `pnpm generate` fails **as expected** until Batch C, because the nav links to `/about`, `/projects`, `/articles` and `/resume` (the crawler has `failOnError: true`). By the user's decision, the CSP step was checked by running `node scripts/postgenerate.mjs` by hand on the partial output: the CSP meta comes right after `<meta charset>`, there are 4 inline scripts and 4 matching hashes, `200.html` is removed, and a second run is refused. Confirmed: `404.html` from `nuxt generate` is a JavaScript-only shell (`<div id="__nuxt"></div>`), so C13 is needed.
+- **Carried over to Batch C:** run the rest of B17 (a full `pnpm generate`, then in `pnpm preview`: no CSP console errors, toggle persistence with no flash, OS theme following, no-JS nav, skip link focus, 320px layout) together with C14.
+- Change during B: the layout has a single root `<div class="site">` (B11). Next: Batch C.
 - **Toolchain: ready.** Node **v24.22.0** (via nvm-windows) and pnpm **12.14.0** (via Corepack) are installed. The plan has been updated for pnpm 12 (see "Environment findings").
 - **Manual step still needed before Batch D (not before Batch A):** on GitHub, set repo Settings → Pages → Source → **GitHub Actions** (one-time).
 - **Questions:** all 7 in section 6 were answered on 2026-10-20 (spec Q22–Q30). Question 3 changed the plan: articles now follow a metadata standard (constitution III).
@@ -425,7 +428,8 @@ export const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('${THEME
 - Batch C replaces this list with `<ContactLinks />`.
 
 **B11. `app/layouts/default.vue`**
-`<a class="skip-link" href="#main">Skip to content</a><SiteHeader /><main id="main" class="container site-main" tabindex="-1"><slot /></main><SiteFooter />`. Scoped: `.site-main { padding-block: var(--space-7) }`.
+`<div class="site"><a class="skip-link" href="#main">Skip to content</a><SiteHeader /><main id="main" class="container site-main" tabindex="-1"><slot /></main><SiteFooter /></div>`. Scoped: `.site-main { padding-block: var(--space-7) }`.
+Nuxt requires a layout to have a **single root element** (for layout transitions), and `vue/no-multiple-template-root` enforces it. The wrapper is a plain `<div>`, so landmarks are unchanged (user decision, 2026-10-20).
 
 **B12. `app/app.vue`** (final version)
 ```vue

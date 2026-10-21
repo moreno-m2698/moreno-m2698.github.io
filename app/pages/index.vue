@@ -1,5 +1,7 @@
 <script setup lang="ts">
-useHead({ title: 'Portfolio' })
+import { site } from '~~/content/site'
+
+usePageSeo({ description: site.description })
 </script>
 
 <template>
