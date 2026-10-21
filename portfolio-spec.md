@@ -153,7 +153,7 @@ Feature IDs are for referencing during planning. All features are **MVP** (requi
 | Browser support | Modern evergreen: latest 2 versions of Chrome, Edge, Firefox, Safari (desktop and mobile) |
 | Analytics | **None** |
 | SEO | Basic SEO + social share previews |
-| Domain | Custom domain, **to be purchased**; launch first at `moreno-m2698.github.io/portfolio` and switch when bought |
+| Domain | Custom domain, **to be purchased**; launch first at `moreno-m2698.github.io` (root) and switch when bought |
 | Site repository | **Public**; the portfolio is **not** listed as a project |
 | Timeline | **ASAP**: launch the MVP within weeks, iterate afterward |
 
@@ -201,6 +201,7 @@ Everything in §6 is in scope for the first launch:
 | Q33 | Nitro's crawler renders every page twice with a non-root base URL (nitrojs/nitro#4441), breaking Windows builds. Fix? | **Crawler off; routes listed explicitly** (static pages + one per article file). Revisit when Nitro PR #4688 ships |
 | Q34 | Canonical URL on error pages? | **None**: error pages get robots `noindex` and no canonical or `og:url` |
 | Q35 | Meta descriptions for Projects, Articles, Resume and error pages? | **Placeholder wording accepted**; real copy comes with the real site identity before launch |
+| Q36 | Where does the site live before the custom domain? | **At the root, `moreno-m2698.github.io`**: this repo was renamed to `moreno-m2698.github.io` (a user site) and the base URL is `/`. The previous site's repo was renamed to `old-github-site`, its Pages turned off, and archived (2026-10-21) |
 | Q12 | Where does article metadata live? | **In each article's `<head>`** (`<title>` + `<meta>` tags); articles are complete, valid HTML documents. *(The "no fixed metadata standard" part is superseded by Q24)* |
 | Q4 | Hosting? | **GitHub Pages** via GitHub Actions (see `constitution.md`) |
 
