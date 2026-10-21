@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare",
     "dev": "PORTFOLIO_FIXTURES=1 nuxt dev",
     "generate": "nuxt generate && node scripts/postgenerate.mjs",
+    "generate:fixtures": "PORTFOLIO_FIXTURES=1 pnpm generate",
     "preview": "node scripts/serve.mjs",
     "build": "pnpm generate",
     "typecheck": "nuxt typecheck",

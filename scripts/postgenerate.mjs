@@ -1,8 +1,21 @@
 import { createHash } from 'node:crypto'
-import { readFile, rm, writeFile } from 'node:fs/promises'
+import { copyFile, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { outputDir } from './lib/config.mjs'
 import { listHtmlFiles } from './lib/html-files.mjs'
+
+// nuxt generate writes 404.html as a JavaScript-only shell, which breaks Principle II. Replace it with the
+// prerendered /404 page (app/pages/404.vue), so the static 404 has its content without JavaScript.
+try {
+  await copyFile(join(outputDir, '404', 'index.html'), join(outputDir, '404.html'))
+}
+catch (error) {
+  if (error.code === 'ENOENT') {
+    console.error(`Missing ${join(outputDir, '404', 'index.html')}. The /404 page was not prerendered: check app/pages/404.vue and nitro.prerender.routes.`)
+    process.exit(1)
+  }
+  throw error
+}
 
 // GitHub Pages has no SPA fallback, so the generated 200.html is removed.
 await rm(join(outputDir, '200.html'), { force: true })

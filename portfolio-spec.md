@@ -198,6 +198,9 @@ Everything in §6 is in scope for the first launch:
 | Q30 | Record Milestone 1 technical decisions in the constitution? | **Yes, now** (constitution v1.1.0): Playwright + axe, html-validate, post-build CSP hashing, `deploy.config.json` base URL, `PORTFOLIO_FIXTURES`, pnpm 12, Node 24 |
 | Q31 | TypeScript 7 is unsupported by typescript-eslint; which version? | **Pin TypeScript 6.x** until typescript-eslint supports 7 (constitution v1.1.1) |
 | Q32 | `nuxt.config.ts` needs Node types; add a dependency? | **Yes, `@types/node@^24`** (dev only, types only) |
+| Q33 | Nitro's crawler renders every page twice with a non-root base URL (nitrojs/nitro#4441), breaking Windows builds. Fix? | **Crawler off; routes listed explicitly** (static pages + one per article file). Revisit when Nitro PR #4688 ships |
+| Q34 | Canonical URL on error pages? | **None**: error pages get robots `noindex` and no canonical or `og:url` |
+| Q35 | Meta descriptions for Projects, Articles, Resume and error pages? | **Placeholder wording accepted**; real copy comes with the real site identity before launch |
 | Q12 | Where does article metadata live? | **In each article's `<head>`** (`<title>` + `<meta>` tags); articles are complete, valid HTML documents. *(The "no fixed metadata standard" part is superseded by Q24)* |
 | Q4 | Hosting? | **GitHub Pages** via GitHub Actions (see `constitution.md`) |
 

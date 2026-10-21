@@ -6,7 +6,9 @@
 - **Progress:** Batch A done on 2026-10-20 (typecheck, lint, validate:html and generate pass; negative article checks verified). Changes made during A: TypeScript pinned to 6.x, `@types/node@^24` added, the `fileURLToPath` import moved to C1.
 - **Batch B written and partly verified on 2026-10-20.** typecheck, lint and validate:html pass. `pnpm generate` fails **as expected** until Batch C, because the nav links to `/about`, `/projects`, `/articles` and `/resume` (the crawler has `failOnError: true`). By the user's decision, the CSP step was checked by running `node scripts/postgenerate.mjs` by hand on the partial output: the CSP meta comes right after `<meta charset>`, there are 4 inline scripts and 4 matching hashes, `200.html` is removed, and a second run is refused. Confirmed: `404.html` from `nuxt generate` is a JavaScript-only shell (`<div id="__nuxt"></div>`), so C13 is needed.
 - **Carried over to Batch C:** run the rest of B17 (a full `pnpm generate`, then in `pnpm preview`: no CSP console errors, toggle persistence with no flash, OS theme following, no-JS nav, skip link focus, 320px layout) together with C14.
-- Change during B: the layout has a single root `<div class="site">` (B11). Next: Batch C.
+- Change during B: the layout has a single root `<div class="site">` (B11).
+- **Batch C written and verified on 2026-10-20** (except browser checks). lint, typecheck and validate:html pass. `pnpm generate` and `pnpm generate:fixtures` each passed 5 of 5 runs, with each page rendered once. Every HTML file has its CSP right after charset, with hashes equal to its inline scripts. Every route has a `_payload.json`. The deploy build has no fixtures, "No articles yet", and no latest-articles section. Metadata fallbacks and the malformed-date failure were verified, and the preview server checks pass. Changes during C: the crawler is off with explicit routes (C1, Nitro bug), `usePageSeo` has `noindex` for error pages (C11), and `getFirstCommitDate` never throws. The page descriptions the implementer wrote were accepted as placeholders until the real copy is written.
+- **Still open from B17/C14 (needs a browser):** no CSP console errors; theme toggle persistence with no flash; following the OS theme; with JavaScript disabled, the pages, nav and 404 are readable; skip link focus; 320px layout with no horizontal scroll; client-side navigation between pages. Next: these checks, then Batch D.
 - **Toolchain: ready.** Node **v24.22.0** (via nvm-windows) and pnpm **12.14.0** (via Corepack) are installed. The plan has been updated for pnpm 12 (see "Environment findings").
 - **Manual step still needed before Batch D (not before Batch A):** on GitHub, set repo Settings → Pages → Source → **GitHub Actions** (one-time).
 - **Questions:** all 7 in section 6 were answered on 2026-10-20 (spec Q22–Q30). Question 3 changed the plan: articles now follow a metadata standard (constitution III).
@@ -524,8 +526,9 @@ const articleDirs = [fileURLToPath(new URL('./content/articles/', import.meta.ur
 if (includeFixtures) articleDirs.push(fileURLToPath(new URL('./tests/fixtures/articles/', import.meta.url)))
 // in defineNuxtConfig:
 runtimeConfig: { articleDirs, repoRoot: fileURLToPath(new URL('./', import.meta.url)) },
-nitro: { prerender: { crawlLinks: true, failOnError: true, routes: ['/', '/404'] } },
+nitro: { prerender: { crawlLinks: false, failOnError: true, routes: prerenderRoutes } },
 ```
+**Changed during C (user decision, 2026-10-20): the crawler is off and routes are listed explicitly.** `prerenderRoutes` is `['/', '/about', '/projects', '/articles', '/resume', '/404']` plus `/articles/<slug>` for every `.html` file in `articleDirs`, read in `nuxt.config.ts`. Reason: with a non-root `baseURL`, Nitro's crawler queues every page both with and without the base and renders it twice. On Windows the two renders race on the payload cache and fail with `EPERM` (nitrojs/nitro#4441, open; fix proposed in PR #4688, not merged). Broken-link detection is covered by `check-links.mjs` (D2). **Revisit `crawlLinks: true` once PR #4688 ships in a Nuxt release.** A new page must be added to `prerenderRoutes`.
 These keys are private: server-only and never sent to the client.
 
 **C2. `package.json`:** add `"generate:fixtures": "PORTFOLIO_FIXTURES=1 pnpm generate"`.
@@ -639,7 +642,7 @@ export const projects: Project[] = [{ name: 'Example project (placeholder)', sum
     - `<header><h1>{{ article.title }}</h1><p class="meta"><time :datetime>…</time> · {{ article.readingMinutes }} min read</p>`, then `<p v-if="article.updated" class="meta">Updated on <time :datetime="article.updated">{{ formatDate(article.updated) }}</time></p>`, plus the tags list shown as `#tag` (F-15), then `</header>`
     - `<!-- eslint-disable-next-line vue/no-v-html -- trusted repo content (constitution III) -->` followed by `<div class="prose" v-html="article.bodyHtml" />`
 - **`pages/resume.vue`:** `<h1>Resume</h1><p>My resume is available as a PDF.</p><p><a :href="resumeUrl">Download resume (PDF)</a></p>`.
-- **`pages/404.vue`:** `<NotFound />`, `usePageSeo({ title: 'Page not found', description: 'This page does not exist.' })`, and `useHead({ meta: [{ name: 'robots', content: 'noindex' }] })`.
+- **`pages/404.vue`:** `<NotFound />` and `usePageSeo({ title: 'Page not found', description: 'This page does not exist.', noindex: true })`. **Changed during C (user decision):** `usePageSeo` has a `noindex` option that adds robots `noindex` and omits the canonical link and `og:url`, because an error page is served at many URLs and shouldn't claim one address. `error.vue` uses it too.
 - **`app/error.vue`**
   - `defineProps<{ error: NuxtError }>()`, with `import type { NuxtError } from '#app'`.
   - Template: `<NuxtLayout><NotFound v-if="error.statusCode === 404" /><section v-else><h1>Something went wrong</h1><p><a :href="homeUrl">Go to the home page</a></p></section></NuxtLayout>`
