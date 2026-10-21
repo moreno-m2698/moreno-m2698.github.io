@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Personal portfolio site: Vue 3 + Nuxt 4, statically generated and hosted on GitHub Pages.
+Personal portfolio site: Vue 3 + Nuxt 4, statically generated and hosted on GitHub Pages at `https://moreno-m2698.github.io/` (repo `moreno-m2698/moreno-m2698.github.io`, base URL `/`).
 
 ## Source documents
 
@@ -16,8 +16,9 @@ Rules:
 
 ## Current status
 
-- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), approved 2026-10-20. Work is on the `milestone-1` branch. **All batches (A–D) are done and verified.** Before merging to `main`: the user's manual keyboard and screen reader pass, the GitHub Pages source setting, and CI on a pull request (see the plan's Status).
-- **Prerender routes are explicit** (`nuxt.config.ts`): a new page must be added to `prerenderRoutes` (the crawler is off because of a Nitro bug, nitrojs/nitro#4441). Start with the plan's **Status** section.
+- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), approved 2026-10-20. **Done and merged to `main`** (PR #1). The manual keyboard and screen reader pass is not recorded as done yet.
+- **Hosting:** Pages source is GitHub Actions. On 2026-10-21 the repo was renamed from `portfolio` to `moreno-m2698.github.io` and the base URL changed to `/` (spec Q36).
+- **Prerender routes are explicit** (`nuxt.config.ts`): a new page must be added to `prerenderRoutes` (the crawler is off because of a Nitro bug, nitrojs/nitro#4441).
 - **Toolchain:** Node **24 LTS** (v24.22.0, managed with nvm-windows), **pnpm 12** (via Corepack), TypeScript **6.x** (pinned; see the constitution's Technical Baseline).
 - If pnpm shows a Corepack download prompt in a non-interactive shell, set `COREPACK_ENABLE_DOWNLOAD_PROMPT=0`.
 

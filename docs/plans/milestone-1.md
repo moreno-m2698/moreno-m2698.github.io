@@ -22,6 +22,10 @@
 
 ---
 
+- **After the milestone (2026-10-21):** PR #1 was merged. The repo was then renamed to `moreno-m2698.github.io`, and the site now lives at the root with base URL `/` (spec Q36, constitution v1.2.0). References to `/portfolio/` below describe the milestone as it was built and are historical.
+
+---
+
 ## Environment findings (read before Batch A)
 
 - **Node v24.22.0** (Node 24 LTS) is active via nvm-windows; other versions are also installed, so `nvm use` switches machine-wide. **pnpm 12.14.0** is enabled through Corepack.

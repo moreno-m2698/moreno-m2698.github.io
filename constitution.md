@@ -1,6 +1,6 @@
 # Portfolio Constitution
 
-> **Status:** Draft v1.1.1, last amended 2026-10-20. Not yet ratified.
+> **Status:** Draft v1.2.0, last amended 2026-10-21. Not yet ratified.
 > This document sets the non-negotiable principles for building the portfolio site. The spec (`portfolio-spec.md`) says *what* to build; this says *how decisions get made*.
 > **Precedence:** Constitution > Spec > Technical plans > Code. When they conflict, either fix the lower document or amend this one. Never quietly ignore a principle.
 
@@ -149,7 +149,7 @@ Checks are introduced in two phases so the MVP can launch quickly without giving
 | Accessibility checks | Playwright + `@axe-core/playwright` over every built page, in light and dark color schemes; CSP violations and page errors also fail | Decided |
 | Testing | Vitest (unit), Playwright (end-to-end) | Proposed |
 | Security policy (CSP) | Added after the build as a `<meta http-equiv>` tag, with a hash for every inline script. `style-src 'unsafe-inline'` is an accepted, documented gap, because Nuxt inlines component CSS | Decided |
-| Base URL | `deploy.config.json` is the single source, read by both the Nuxt config and the check scripts; `NUXT_APP_BASE_URL` overrides it. Changes to `/` when the custom domain arrives | Decided |
+| Base URL | `deploy.config.json` is the single source (`/`), read by both the Nuxt config and the check scripts; `NUXT_APP_BASE_URL` overrides it | Decided |
 | Test fixtures | Test-only articles in `tests/fixtures/articles/`, included only when `PORTFOLIO_FIXTURES=1`; the deploy build fails if any appear in its output | Decided |
 | Package manager | **pnpm 12**, with the lockfile committed; CI installs with `pnpm install --frozen-lockfile`. pnpm settings (`shellEmulator`, `engineStrict`, `allowBuilds`) live in `pnpm-workspace.yaml` | Decided |
 | Runtime | **Node 24 LTS** | Decided |
@@ -161,7 +161,7 @@ Checks are introduced in two phases so the MVP can launch quickly without giving
 
 - **Host: GitHub Pages**, deployed by GitHub Actions on every push to `main`. The repository is **public**.
 - `main` MUST always be deployable. Work happens on branches and merges after the quality gates pass.
-- **Base path:** until the custom domain exists, the site is served at `https://moreno-m2698.github.io/portfolio/`. The build MUST take a configurable base URL, and no absolute root paths may be hard-coded.
+- **Repository and address:** the repository is `moreno-m2698/moreno-m2698.github.io` (a GitHub *user site*), so until the custom domain exists the site is served at the root, `https://moreno-m2698.github.io/`, with base path `/`. (It replaced an earlier site, now archived as `old-github-site`.) The build MUST still take a configurable base URL (`deploy.config.json`), and no absolute root paths may be hard-coded.
 - **Launch plan:** the MVP launches at the github.io address as soon as it's ready, without waiting for the domain.
 - **Custom domain:** set up with a `CNAME` file once purchased, with HTTPS enforced. GitHub Pages then automatically redirects the github.io address to the custom domain, so links shared before the switch keep working. This MUST be checked after the switch.
 - **Limits accepted as a consequence of this host:**
