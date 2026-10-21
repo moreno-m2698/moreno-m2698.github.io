@@ -2,14 +2,15 @@
 
 ## Status (2026-10-20): read this first when resuming
 
-- **Plan status: approved by the user on 2026-10-20** (including the pnpm 12 updates). No implementation has started.
+- **Plan status: approved by the user on 2026-10-20** (including the pnpm 12 updates).
+- **Progress:** Batch A done on 2026-10-20 (typecheck, lint, validate:html and generate pass; negative article checks verified). Changes made during A: TypeScript pinned to 6.x, `@types/node@^24` added, the `fileURLToPath` import moved to C1. Next: Batch B.
 - **Toolchain: ready.** Node **v24.22.0** (via nvm-windows) and pnpm **12.14.0** (via Corepack) are installed. The plan has been updated for pnpm 12 (see "Environment findings").
 - **Manual step still needed before Batch D (not before Batch A):** on GitHub, set repo Settings → Pages → Source → **GitHub Actions** (one-time).
 - **Questions:** all 7 in section 6 were answered on 2026-10-20 (spec Q22–Q30). Question 3 changed the plan: articles now follow a metadata standard (constitution III).
 - **Next steps:**
   1. Implement Batch A → D in order, following the workflow in `CLAUDE.md` (`implementer` per batch, then `test-runner`; checks at the end of each batch). Work on a branch; commit or push only when the user asks.
 - **Subagents:** the agents in `.claude/agents/` load at session start. If one isn't found, run it as a general-purpose agent with the same model and tell it to follow that agent's file.
-- Decisions Q14–Q21 (spec) and constitution v0.16.0 are committed. Q22–Q30 and constitution v1.1.0 (article metadata standard, Technical Baseline) were recorded on 2026-10-20 and are **not committed yet**.
+- Decisions Q14–Q21 (spec) and constitution v0.16.0 are committed. Q22–Q32 and constitution v1.1.1 (article metadata standard, Technical Baseline, TypeScript 6 pin) are committed on the `milestone-1` branch.
 
 ---
 
@@ -54,7 +55,8 @@
 | Package | Justification |
 |---|---|
 | `nuxt@^4`, `vue`, `vue-router` (dependencies) | The framework (decided). Pin `^4` because Nuxt 5 may exist by now. |
-| `typescript`, `vue-tsc` | Required by `nuxt typecheck` for the strict TypeScript gate. |
+| `typescript@^6.0`, `vue-tsc` | Required by `nuxt typecheck` for the strict TypeScript gate. **TypeScript is pinned to 6.x** (user decision, 2026-10-20): TypeScript 7 is the latest release, but typescript-eslint 8.72 (used by `@nuxt/eslint`) only supports `<6.1.0`. Revisit when typescript-eslint supports 7. |
+| `@types/node@^24` | Node type definitions for `nuxt.config.ts` (`node:fs`, `node:url`, `process`); without it `nuxt typecheck` fails with TS2591. Types only, never shipped. Added in A3 with the user's approval (2026-10-20). |
 | `eslint`, `@nuxt/eslint` | Linting, plus formatting through its built-in stylistic rules, so Prettier isn't needed. |
 | `html-validate` | The article HTML validation gate (named in the constitution). |
 | `node-html-parser` | A small, fast HTML parser used at build time for article metadata and body extraction, and reused by the link checker. Much lighter than cheerio or jsdom. It never ships to the browser. |
@@ -198,7 +200,6 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
 8. **`nuxt.config.ts`** (initial version):
    ```ts
    import { readFileSync } from 'node:fs'
-   import { fileURLToPath } from 'node:url'
 
    const deployConfig = JSON.parse(readFileSync(new URL('./deploy.config.json', import.meta.url), 'utf8')) as { baseURL: string }
    let baseURL = process.env.NUXT_APP_BASE_URL || deployConfig.baseURL
@@ -215,7 +216,7 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
      nitro: { prerender: { crawlLinks: true, failOnError: true } },
    })
    ```
-   `fileURLToPath` is used in Batch C.
+   Don't import `fileURLToPath` yet: lint fails on an unused import. C1 adds it. ESLint's `nuxt/nuxt-config-keys-order` rule reorders the keys (e.g. `modules` first); let `pnpm lint:fix` do that.
 
 9. **`eslint.config.mjs`**
    ```js
@@ -290,9 +291,9 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
 
 **A2. Install (cli-runner)**
 1. `pnpm add nuxt@^4 vue vue-router`
-2. `pnpm add -D typescript vue-tsc eslint @nuxt/eslint html-validate node-html-parser`
+2. `pnpm add -D typescript@^6.0 vue-tsc eslint @nuxt/eslint html-validate node-html-parser` (TypeScript 6, see section 2)
 3. pnpm 12 fails the install with `ERR_PNPM_IGNORED_BUILDS` ("Ignored build scripts: …") until build scripts are approved. Approve exactly the listed packages with `pnpm approve-builds <pkg> <pkg> …` (expected: `esbuild`, `@parcel/watcher`, maybe `unrs-resolver`), which writes them to `allowBuilds` in `pnpm-workspace.yaml`. Then re-run `pnpm install`. **Report the list to the main session**; don't approve packages beyond the ones pnpm names, and don't use `--all`.
-4. If `@nuxt/eslint` reports a peer conflict with ESLint 10, run `pnpm add -D eslint@^9`.
+4. If `@nuxt/eslint` reports a peer conflict with ESLint 10, run `pnpm add -D eslint@^9`. (Done 2026-10-20: no conflict; ESLint 10.13 is supported. The build scripts approved were `esbuild` and `unrs-resolver`.)
 
 **A3. Verify**
 - [ ] `pnpm install` succeeds and runs `nuxt prepare`.
@@ -513,6 +514,7 @@ export function usePageSeo(seo: PageSeo): void
 
 **C1. `nuxt.config.ts` additions**
 ```ts
+import { fileURLToPath } from 'node:url' // with the other imports
 const includeFixtures = process.env.PORTFOLIO_FIXTURES === '1'
 const articleDirs = [fileURLToPath(new URL('./content/articles/', import.meta.url))]
 if (includeFixtures) articleDirs.push(fileURLToPath(new URL('./tests/fixtures/articles/', import.meta.url)))

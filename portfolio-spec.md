@@ -196,6 +196,8 @@ Everything in §6 is in scope for the first launch:
 | Q28 | Where does the Resume call-to-action link? | **Straight to `/resume.pdf`**; the `/resume` page stays reachable from the main navigation |
 | Q29 | Search and tag controls before F-11/F-12 are built? | **Omitted** until they work (no disabled placeholders); tags still shown as text on each article |
 | Q30 | Record Milestone 1 technical decisions in the constitution? | **Yes, now** (constitution v1.1.0): Playwright + axe, html-validate, post-build CSP hashing, `deploy.config.json` base URL, `PORTFOLIO_FIXTURES`, pnpm 12, Node 24 |
+| Q31 | TypeScript 7 is unsupported by typescript-eslint; which version? | **Pin TypeScript 6.x** until typescript-eslint supports 7 (constitution v1.1.1) |
+| Q32 | `nuxt.config.ts` needs Node types; add a dependency? | **Yes, `@types/node@^24`** (dev only, types only) |
 | Q12 | Where does article metadata live? | **In each article's `<head>`** (`<title>` + `<meta>` tags); articles are complete, valid HTML documents. *(The "no fixed metadata standard" part is superseded by Q24)* |
 | Q4 | Hosting? | **GitHub Pages** via GitHub Actions (see `constitution.md`) |
 

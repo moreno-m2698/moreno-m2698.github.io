@@ -1,6 +1,6 @@
 # Portfolio Constitution
 
-> **Status:** Draft v1.1.0, last amended 2026-10-20. Not yet ratified.
+> **Status:** Draft v1.1.1, last amended 2026-10-20. Not yet ratified.
 > This document sets the non-negotiable principles for building the portfolio site. The spec (`portfolio-spec.md`) says *what* to build; this says *how decisions get made*.
 > **Precedence:** Constitution > Spec > Technical plans > Code. When they conflict, either fix the lower document or amend this one. Never quietly ignore a principle.
 
@@ -153,6 +153,7 @@ Checks are introduced in two phases so the MVP can launch quickly without giving
 | Test fixtures | Test-only articles in `tests/fixtures/articles/`, included only when `PORTFOLIO_FIXTURES=1`; the deploy build fails if any appear in its output | Decided |
 | Package manager | **pnpm 12**, with the lockfile committed; CI installs with `pnpm install --frozen-lockfile`. pnpm settings (`shellEmulator`, `engineStrict`, `allowBuilds`) live in `pnpm-workspace.yaml` | Decided |
 | Runtime | **Node 24 LTS** | Decided |
+| TypeScript | **6.x**, pinned because typescript-eslint (used by `@nuxt/eslint`) doesn't support TypeScript 7 yet; revisit when it does. `@types/node@^24` provides Node types for config and scripts | Decided |
 
 ---
 
