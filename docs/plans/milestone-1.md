@@ -1,7 +1,8 @@
 # Milestone 1 plan: scaffold, layout, skeleton pages, article loading, Phase 1 checks
 
-## Status (2026-10-20): read this first when resuming
+## Status: **complete** (merged 2026-10-21, live at https://moreno-m2698.github.io/)
 
+- **Outcome:** all batches A–D are done and verified, merged to `main` (PR #1, then PR #2 for the root base URL) and deployed by GitHub Actions. The live site was checked on 2026-10-21: every page returns 200, `resume.pdf` is served as a PDF, and a missing page returns 404 with the styled not-found page. Open follow-ups are tracked in `CLAUDE.md` under "Next up". The notes below are the history of the milestone.
 - **Plan status: approved by the user on 2026-10-20** (including the pnpm 12 updates).
 - **Progress:** Batch A done on 2026-10-20 (typecheck, lint, validate:html and generate pass; negative article checks verified). Changes made during A: TypeScript pinned to 6.x, `@types/node@^24` added, the `fileURLToPath` import moved to C1.
 - **Batch B written and partly verified on 2026-10-20.** typecheck, lint and validate:html pass. `pnpm generate` fails **as expected** until Batch C, because the nav links to `/about`, `/projects`, `/articles` and `/resume` (the crawler has `failOnError: true`). By the user's decision, the CSP step was checked by running `node scripts/postgenerate.mjs` by hand on the partial output: the CSP meta comes right after `<meta charset>`, there are 4 inline scripts and 4 matching hashes, `200.html` is removed, and a second run is refused. Confirmed: `404.html` from `nuxt generate` is a JavaScript-only shell (`<div id="__nuxt"></div>`), so C13 is needed.
@@ -11,14 +12,8 @@
 - **Still open from B17/C14 (needs a browser):** no CSP console errors; theme toggle persistence with no flash; following the OS theme; with JavaScript disabled, the pages, nav and 404 are readable; skip link focus; 320px layout with no horizontal scroll; client-side navigation between pages. **Deferred to after Batch D (user decision):** `check:a11y` covers CSP console errors and page errors; the rest are checked with a one-off Playwright script (not committed) once Playwright is installed in D1. The manual keyboard and screen reader pass by the user is still required before merge.
 - **Batch D done on 2026-10-20.** `@playwright/test` 1.64.1 and `@axe-core/playwright` 4.14.0 were added (no build-script approvals needed, no peer issues). Workflow actions: `actions/checkout@v7`, `pnpm/action-setup@v6` (supports pnpm 12), `actions/setup-node@v7`, `actions/configure-pages@v6`, `actions/upload-pages-artifact@v5`, `actions/deploy-pages@v5`. `pnpm check` passes: 9 pages and 177 links, 0 broken; 9 pages × 2 themes, 0 axe violations. All D7 negative checks fail as expected: NuxtLink to a missing page, a raw root path, low contrast, a tampered inline script, and fixtures in the deploy build. The workflow YAML was parsed and inspected, but `actionlint` isn't installed.
 - **Deferred browser checks: all pass** (one-off Playwright script, not committed): 320px with no horizontal scroll on any page; no-JS content, nav, project card and 404, with no toggle; theme follows the OS, persists across reloads, is applied before paint and beats the OS setting; skip link is the first Tab stop and focuses `<main>`; client navigation works; reduced motion removes transitions; no console, CSP or page errors and no failed requests.
-- **Remaining before merge to `main`:** (1) the user's manual keyboard and screen reader pass over all pages in both themes (constitution I and VIII); (2) GitHub repo Settings → Pages → Source → **GitHub Actions**; (3) push the branch so CI runs on a pull request, then merge. Placeholder content (`content/site.ts`, `content/projects.ts`, About text, resume PDF) is expected at this stage.
-- **Toolchain: ready.** Node **v24.22.0** (via nvm-windows) and pnpm **12.14.0** (via Corepack) are installed. The plan has been updated for pnpm 12 (see "Environment findings").
-- **Manual step still needed before Batch D (not before Batch A):** on GitHub, set repo Settings → Pages → Source → **GitHub Actions** (one-time).
-- **Questions:** all 7 in section 6 were answered on 2026-10-20 (spec Q22–Q30). Question 3 changed the plan: articles now follow a metadata standard (constitution III).
-- **Next steps:**
-  1. Implement Batch A → D in order, following the workflow in `CLAUDE.md` (`implementer` per batch, then `test-runner`; checks at the end of each batch). Work on a branch; commit or push only when the user asks.
-- **Subagents:** the agents in `.claude/agents/` load at session start. If one isn't found, run it as a general-purpose agent with the same model and tell it to follow that agent's file.
-- Decisions Q14–Q21 (spec) and constitution v0.16.0 are committed. Q22–Q32 and constitution v1.1.1 (article metadata standard, Technical Baseline, TypeScript 6 pin) are committed on the `milestone-1` branch.
+- **Merge (2026-10-21):** CI passed on PR #1 and it was merged on GitHub. Pages source was set to GitHub Actions. The manual keyboard and screen reader pass was **not recorded** before the merge, so it's still open (see `CLAUDE.md`).
+- **Questions:** all 7 in section 6 were answered on 2026-10-20 (spec Q22–Q30). Question 3 changed the plan: articles now follow a metadata standard (constitution III). Later decisions: spec Q31–Q36.
 
 ---
 
