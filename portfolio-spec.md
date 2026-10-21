@@ -99,6 +99,7 @@ The site should come across as a clean, smooth, professional showcase. **The sit
 ## 5. Content Authoring
 
 - Articles are written as **HTML files in the site's repository** as complete, valid HTML documents (the build takes the `<body>` content and wraps it in the site layout)
+- Article metadata follows the **article metadata standard** in `constitution.md` (Principle III): a required `<title>`, plus optional `description`, `date`, `updated`, `series` and Obsidian-style `tags` (e.g. `#vue/reactivity #javascript`). New tags can be added to the standard later
 - Publishing workflow: commit and push
 - Project cards are hand-curated content maintained in the repository, as a typed TypeScript data file
 - About page content is written directly in the About page component
@@ -186,7 +187,16 @@ Everything in §6 is in scope for the first launch:
 | Q19 | Article for testing before real articles exist? | **Test-only sample article** in a fixtures folder; never published |
 | Q20 | Empty states? | Short text ("No articles yet", "No projects yet"); Home's latest-articles section hidden when empty |
 | Q21 | Remember a manual theme choice? | **Yes**, in `localStorage`, applied by a tiny inline script before first paint (allowed by hash in the CSP); without JavaScript the OS setting applies |
-| Q12 | Where does article metadata live? | **In each article's `<head>`** (`<title>` + `<meta>` tags); articles are complete, valid HTML documents; no fixed metadata standard |
+| Q22 | Theme toggle states? | **Two states** (Light / Dark button, `aria-pressed`); after a manual choice the OS setting no longer applies until storage is cleared |
+| Q23 | Date for an undated article that isn't committed yet? | **The file's last-modified date**; the git first-commit date takes over once committed (constitution v0.16.1) |
+| Q24 | Standardize article metadata? | **Yes, an extensible standard** (supersedes Q12's "no fixed standard"): required `<title>`; optional `description`, `date`, `updated`, `series`, `tags`. No `keywords` and no `series-part` (series parts are ordered by date). Unknown tags are ignored (constitution v1.0.0) |
+| Q25 | Tag format? | **Obsidian-style**, space-separated, `#` optional; nested with `/` (filtering by a parent matches children); case-insensitive; no spaces; not all numbers |
+| Q26 | Malformed metadata values? | **Fail the article check** in CI with the file, tag and problem. Missing or empty tags still use their fallbacks and never fail |
+| Q27 | Reading time formula? | **Body words ÷ 200 per minute**, rounded, minimum 1 minute; code counts the same as prose |
+| Q28 | Where does the Resume call-to-action link? | **Straight to `/resume.pdf`**; the `/resume` page stays reachable from the main navigation |
+| Q29 | Search and tag controls before F-11/F-12 are built? | **Omitted** until they work (no disabled placeholders); tags still shown as text on each article |
+| Q30 | Record Milestone 1 technical decisions in the constitution? | **Yes, now** (constitution v1.1.0): Playwright + axe, html-validate, post-build CSP hashing, `deploy.config.json` base URL, `PORTFOLIO_FIXTURES`, pnpm 12, Node 24 |
+| Q12 | Where does article metadata live? | **In each article's `<head>`** (`<title>` + `<meta>` tags); articles are complete, valid HTML documents. *(The "no fixed metadata standard" part is superseded by Q24)* |
 | Q4 | Hosting? | **GitHub Pages** via GitHub Actions (see `constitution.md`) |
 
 ## 11. Deferred to Technical Planning
