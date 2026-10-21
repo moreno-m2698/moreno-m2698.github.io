@@ -1,6 +1,6 @@
 # Portfolio Constitution
 
-> **Status:** Draft v0.16.0, last amended 2026-10-20. Not yet ratified.
+> **Status:** Draft v1.1.1, last amended 2026-10-20. Not yet ratified.
 > This document sets the non-negotiable principles for building the portfolio site. The spec (`portfolio-spec.md`) says *what* to build; this says *how decisions get made*.
 > **Precedence:** Constitution > Spec > Technical plans > Code. When they conflict, either fix the lower document or amend this one. Never quietly ignore a principle.
 
@@ -29,19 +29,40 @@ Wording: **MUST** is a hard rule, and failing it blocks a merge. **SHOULD** is t
 - Articles are **hand-written HTML files**. Projects are a **typed TypeScript data file** (e.g. `content/projects.ts` exporting an array with a `Project` type), so missing or misspelled fields are type errors. Both live in the repo, and publishing means committing and pushing.
 - Each article is a **complete, valid HTML document**: `<!doctype html>`, `<html lang>`, a `<head>` holding its metadata, and a `<body>` holding the article content. The build takes the content from `<body>` and wraps it in the site layout. The article's `<body>` MUST NOT contain site navigation or inline `<style>`/`<script>`.
 - Article HTML MUST use semantic elements (`<h2>`–`<h4>`, `<figure>`/`<figcaption>`, `<pre><code class="language-…">`) so styling, highlighting and accessibility work without per-article fixes. Article headings start at `<h2>`, because the layout renders the title as `<h1>`.
-- **Article metadata lives in the article's `<head>`**, in `<title>` and `<meta>` tags. There is **no fixed metadata standard**: which tags an article uses is up to the author. Whatever tags are used MUST produce valid HTML. They sit in `<head>`, `<meta>` tags use `name`/`content` pairs, and every article has a `<title>`, which valid HTML requires anyway.
+- **Article metadata lives in the article's `<head>`**, in `<title>` and `<meta name="…" content="…">` tags, following the **article metadata standard** below. `<title>` is required (valid HTML requires it anyway); every other tag is optional.
+
+  | Tag | Required | Format | Used by |
+  |---|---|---|---|
+  | `<title>` | **Required** | Plain text, not empty | Page title, lists, search |
+  | `description` | Optional | Plain text, about 160 characters | Search, list previews, meta description, share previews |
+  | `date` | Optional | `YYYY-MM-DD`, a real calendar date | Publish date shown, list order, latest articles on Home |
+  | `updated` | Optional | `YYYY-MM-DD`, a real calendar date | An "Updated on …" line on the article |
+  | `series` | Optional | Plain text. Articles with the same value form one series | Series links |
+  | `tags` | Optional | Obsidian-style tags separated by whitespace (rules below) | Tags shown on the article, tag filter, search |
+
+  **Tag rules** (modeled on Obsidian):
+  - Each tag MAY start with `#`, which is not part of the tag (`#vue` and `vue` are the same tag).
+  - A tag contains only letters, numbers, `-`, `_` and `/`. It has no spaces, and it MUST NOT be made only of numbers.
+  - `/` nests tags: `vue/reactivity` is a child of `vue`. A tag MUST NOT start or end with `/` or contain `//`. Filtering by a parent tag also matches its children.
+  - Tags are case-insensitive: they are compared and displayed in lowercase. Duplicates are removed.
+  - Example: `<meta name="tags" content="#vue/reactivity #javascript #til">`.
+
+- **The standard is extensible.** A new tag is added by adding a row to the table above (with its format and fallback) and a field to the typed article metadata in code, in the same change. The build ignores `<meta>` tags it doesn't recognize, so authors MAY add other valid tags freely.
 - Article files MUST pass an HTML validator in CI. A validation error fails the build.
-- The build reads whatever metadata is present and MUST handle missing tags gracefully, never failing because a tag is absent. Fallbacks:
+- **Missing tags never fail the build.** A tag that is absent, or whose `content` is empty, uses the fallback below.
+- **Malformed tags fail the article check.** A recognized tag that is present but doesn't match its format (e.g. a `date` that isn't a real `YYYY-MM-DD` date, or a tag containing a space or made only of numbers) MUST fail the article check in CI, naming the file, the tag and the problem.
+- Fallbacks:
 
   | Missing | Used by | Fallback |
   |---|---|---|
-  | Date | Latest articles on Home, list order, displayed date | Date of the article file's first git commit. CI MUST check out full git history (`fetch-depth: 0`) for this to work |
-  | Summary / description | Search, list previews, meta description, share previews | First paragraph of the article body, as plain text, truncated to about 160 characters |
-  | Tags | Tag filter, tags shown on the article | No tags shown; the article appears only under "All" |
-  | Series / series part | Series links | No series links. If the series is set but the part is missing, parts are ordered by date |
+  | `date` | Latest articles on Home, list order, displayed date | Date of the article file's first git commit. CI MUST check out full git history (`fetch-depth: 0`) for this to work. If the file isn't committed yet (a local draft), the file's last-modified date |
+  | `updated` | "Updated on" line | Not shown |
+  | `description` | Search, list previews, meta description, share previews | First paragraph of the article body, as plain text, truncated to about 160 characters |
+  | `tags` | Tag filter, tags shown on the article | No tags shown; the article appears only under "All" |
+  | `series` | Series links | No series links. Parts of a series are ordered by date, oldest first |
 - The slug is the file name (e.g. `articles/vue-reactivity.html` → `/articles/vue-reactivity`). Reading time is calculated at build time from the body text and is never written by hand.
 
-  Illustrative example (not a required set of tags):
+  Example using every tag in the standard:
 
   ```html
   <!doctype html>
@@ -51,8 +72,9 @@ Wording: **MUST** is a hard rule, and failing it blocks a merge. **SHOULD** is t
     <title>Understanding Vue Reactivity</title>
     <meta name="description" content="How Vue tracks dependencies, and why it matters.">
     <meta name="date" content="2026-10-20">
-    <meta name="keywords" content="vue, javascript">
+    <meta name="updated" content="2026-11-02">
     <meta name="series" content="Learning Vue">
+    <meta name="tags" content="#vue/reactivity #javascript">
   </head>
   <body>
     <p>Article content starts here…</p>
@@ -116,16 +138,22 @@ Checks are introduced in two phases so the MVP can launch quickly without giving
 | Content | Articles as HTML files in the repo, loaded and pre-rendered at build time | Decided |
 | Project data | Typed TypeScript array (`content/projects.ts`) | Decided |
 | About page content | Written directly in `pages/about.vue` (bio, skills, experience, currently learning) | Decided |
-| Article metadata | `<title>` and `<meta>` tags in each article's `<head>`; no fixed standard; must be valid HTML (see Principle III) | Decided |
-| HTML validation | An HTML validator (e.g. `html-validate`) run over article files in CI | Proposed |
+| Article metadata | `<title>` and `<meta>` tags in each article's `<head>`, following the extensible article metadata standard (`description`, `date`, `updated`, `series`, Obsidian-style `tags`); malformed values fail the article check (see Principle III) | Decided |
+| HTML validation | `html-validate` over article files in CI, plus an article rules check (body content rules, slug format, metadata standard) | Decided |
 | Syntax highlighting | Shiki, at build time, applied to `<pre><code class="language-…">` blocks (no client-side highlighter) | Proposed |
 | Diagrams | **Both**: Mermaid written as text in a `<pre class="mermaid">` block and rendered to static SVG at build time (no Mermaid JavaScript shipped to visitors), and hand-made SVG for diagrams that need custom design | Decided |
 | Search | Client-side over a build-time index of titles, tags and summaries | Proposed |
 | Styling | Plain CSS + Vue `<style scoped>` blocks, with custom-property design tokens | Decided |
 | Fonts | External services such as Google Fonts allowed; downloading at build and self-hosting preferred | Decided |
 | Theme | `prefers-color-scheme` by default via CSS; manual choice stored in `localStorage` and applied by a tiny inline script (CSP hash) before first paint | Decided |
-| Testing | Vitest (unit), Playwright + axe (end-to-end and accessibility) | Proposed |
-| Package manager | **pnpm**, with the lockfile committed; CI installs with `pnpm install --frozen-lockfile` | Decided |
+| Accessibility checks | Playwright + `@axe-core/playwright` over every built page, in light and dark color schemes; CSP violations and page errors also fail | Decided |
+| Testing | Vitest (unit), Playwright (end-to-end) | Proposed |
+| Security policy (CSP) | Added after the build as a `<meta http-equiv>` tag, with a hash for every inline script. `style-src 'unsafe-inline'` is an accepted, documented gap, because Nuxt inlines component CSS | Decided |
+| Base URL | `deploy.config.json` is the single source, read by both the Nuxt config and the check scripts; `NUXT_APP_BASE_URL` overrides it. Changes to `/` when the custom domain arrives | Decided |
+| Test fixtures | Test-only articles in `tests/fixtures/articles/`, included only when `PORTFOLIO_FIXTURES=1`; the deploy build fails if any appear in its output | Decided |
+| Package manager | **pnpm 12**, with the lockfile committed; CI installs with `pnpm install --frozen-lockfile`. pnpm settings (`shellEmulator`, `engineStrict`, `allowBuilds`) live in `pnpm-workspace.yaml` | Decided |
+| Runtime | **Node 24 LTS** | Decided |
+| TypeScript | **6.x**, pinned because typescript-eslint (used by `@nuxt/eslint`) doesn't support TypeScript 7 yet; revisit when it does. `@types/node@^24` provides Node types for config and scripts | Decided |
 
 ---
 

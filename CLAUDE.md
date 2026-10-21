@@ -16,8 +16,10 @@ Rules:
 
 ## Current status
 
-- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), awaiting approval. Start with its **Status** section.
-- **Blockers:** local Node is v19.8.1 (needs **Node 24 LTS**), and **pnpm is not installed**. Nothing can be built until both are fixed.
+- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), approved 2026-10-20. Work is on the `milestone-1` branch. **All batches (A–D) are done and verified.** Before merging to `main`: the user's manual keyboard and screen reader pass, the GitHub Pages source setting, and CI on a pull request (see the plan's Status).
+- **Prerender routes are explicit** (`nuxt.config.ts`): a new page must be added to `prerenderRoutes` (the crawler is off because of a Nitro bug, nitrojs/nitro#4441). Start with the plan's **Status** section.
+- **Toolchain:** Node **24 LTS** (v24.22.0, managed with nvm-windows), **pnpm 12** (via Corepack), TypeScript **6.x** (pinned; see the constitution's Technical Baseline).
+- If pnpm shows a Corepack download prompt in a non-interactive shell, set `COREPACK_ENABLE_DOWNLOAD_PROMPT=0`.
 
 ## Model usage
 
@@ -42,6 +44,6 @@ Feature workflow:
 
 ## Working conventions
 
-- Package manager: **pnpm** (lockfile committed).
+- Package manager: **pnpm 12** (lockfile committed). pnpm settings live in `pnpm-workspace.yaml` (camelCase, e.g. `shellEmulator`, `allowBuilds`); pnpm 12 ignores them in `.npmrc` and in the `package.json` `"pnpm"` field.
 - Work on a branch. Merge to `main` only after the Phase 1 quality gates pass (constitution, Principle VIII).
 - Commit or push only when the user asks.

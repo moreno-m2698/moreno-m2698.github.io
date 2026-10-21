@@ -1,0 +1,42 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": ">=12"
+  },
+  "scripts": {
+    "postinstall": "nuxt prepare",
+    "dev": "PORTFOLIO_FIXTURES=1 nuxt dev",
+    "generate": "nuxt generate && node scripts/postgenerate.mjs",
+    "generate:fixtures": "PORTFOLIO_FIXTURES=1 pnpm generate",
+    "build": "pnpm generate",
+    "preview": "node scripts/serve.mjs",
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "validate:html": "html-validate \"content/articles/**/*.html\" \"tests/fixtures/articles/**/*.html\" && node scripts/check-article-rules.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:a11y": "node scripts/check-a11y.mjs",
+    "verify:no-fixtures": "node scripts/verify-no-fixtures.mjs",
+    "check": "pnpm typecheck && pnpm lint && pnpm validate:html && pnpm generate:fixtures && pnpm check:links && pnpm check:a11y"
+  },
+  "dependencies": {
+    "nuxt": "^4.6.2",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@nuxt/eslint": "^1.17.0",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^24.19.2",
+    "eslint": "^10.13.0",
+    "html-validate": "^11.16.4",
+    "node-html-parser": "^9.0.5",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.13"
+  }
+}

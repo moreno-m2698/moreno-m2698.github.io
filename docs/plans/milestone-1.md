@@ -2,26 +2,36 @@
 
 ## Status (2026-10-20): read this first when resuming
 
-- **Plan status: written by `planner`, awaiting the user's approval.** No implementation has started.
-- **Blockers. Resolve these before Batch A; implementation can't start until they're done:**
-  1. **Node.js is too old.** The local machine has **v19.8.1** (end-of-life). Nuxt 4 needs **Node 24 LTS**. The user installs it (nodejs.org, or nvm-windows: `nvm install 24` then `nvm use 24`). Check with `node -v`, which must print `v24.x`.
-  2. **pnpm isn't installed.** After Node 24, run `corepack enable pnpm` (or `npm i -g pnpm`). Check with `pnpm -v`.
-  3. **GitHub Pages source.** On GitHub, set repo Settings → Pages → Source → **GitHub Actions** (one-time, manual). Needed before the first deploy (Batch D), not before Batch A.
-- **Pending questions:** the 7 in section 6 below. They haven't been asked yet. Ask them **one at a time** (the user's preference), record the answers in the spec's decisions log and/or the constitution, and update this plan where an answer changes it. Each question has a default already built into the plan.
+- **Plan status: approved by the user on 2026-10-20** (including the pnpm 12 updates).
+- **Progress:** Batch A done on 2026-10-20 (typecheck, lint, validate:html and generate pass; negative article checks verified). Changes made during A: TypeScript pinned to 6.x, `@types/node@^24` added, the `fileURLToPath` import moved to C1.
+- **Batch B written and partly verified on 2026-10-20.** typecheck, lint and validate:html pass. `pnpm generate` fails **as expected** until Batch C, because the nav links to `/about`, `/projects`, `/articles` and `/resume` (the crawler has `failOnError: true`). By the user's decision, the CSP step was checked by running `node scripts/postgenerate.mjs` by hand on the partial output: the CSP meta comes right after `<meta charset>`, there are 4 inline scripts and 4 matching hashes, `200.html` is removed, and a second run is refused. Confirmed: `404.html` from `nuxt generate` is a JavaScript-only shell (`<div id="__nuxt"></div>`), so C13 is needed.
+- **Carried over to Batch C:** run the rest of B17 (a full `pnpm generate`, then in `pnpm preview`: no CSP console errors, toggle persistence with no flash, OS theme following, no-JS nav, skip link focus, 320px layout) together with C14.
+- Change during B: the layout has a single root `<div class="site">` (B11).
+- **Batch C written and verified on 2026-10-20** (except browser checks). lint, typecheck and validate:html pass. `pnpm generate` and `pnpm generate:fixtures` each passed 5 of 5 runs, with each page rendered once. Every HTML file has its CSP right after charset, with hashes equal to its inline scripts. Every route has a `_payload.json`. The deploy build has no fixtures, "No articles yet", and no latest-articles section. Metadata fallbacks and the malformed-date failure were verified, and the preview server checks pass. Changes during C: the crawler is off with explicit routes (C1, Nitro bug), `usePageSeo` has `noindex` for error pages (C11), and `getFirstCommitDate` never throws. The page descriptions the implementer wrote were accepted as placeholders until the real copy is written.
+- **Still open from B17/C14 (needs a browser):** no CSP console errors; theme toggle persistence with no flash; following the OS theme; with JavaScript disabled, the pages, nav and 404 are readable; skip link focus; 320px layout with no horizontal scroll; client-side navigation between pages. **Deferred to after Batch D (user decision):** `check:a11y` covers CSP console errors and page errors; the rest are checked with a one-off Playwright script (not committed) once Playwright is installed in D1. The manual keyboard and screen reader pass by the user is still required before merge.
+- **Batch D done on 2026-10-20.** `@playwright/test` 1.64.1 and `@axe-core/playwright` 4.14.0 were added (no build-script approvals needed, no peer issues). Workflow actions: `actions/checkout@v7`, `pnpm/action-setup@v6` (supports pnpm 12), `actions/setup-node@v7`, `actions/configure-pages@v6`, `actions/upload-pages-artifact@v5`, `actions/deploy-pages@v5`. `pnpm check` passes: 9 pages and 177 links, 0 broken; 9 pages × 2 themes, 0 axe violations. All D7 negative checks fail as expected: NuxtLink to a missing page, a raw root path, low contrast, a tampered inline script, and fixtures in the deploy build. The workflow YAML was parsed and inspected, but `actionlint` isn't installed.
+- **Deferred browser checks: all pass** (one-off Playwright script, not committed): 320px with no horizontal scroll on any page; no-JS content, nav, project card and 404, with no toggle; theme follows the OS, persists across reloads, is applied before paint and beats the OS setting; skip link is the first Tab stop and focuses `<main>`; client navigation works; reduced motion removes transitions; no console, CSP or page errors and no failed requests.
+- **Remaining before merge to `main`:** (1) the user's manual keyboard and screen reader pass over all pages in both themes (constitution I and VIII); (2) GitHub repo Settings → Pages → Source → **GitHub Actions**; (3) push the branch so CI runs on a pull request, then merge. Placeholder content (`content/site.ts`, `content/projects.ts`, About text, resume PDF) is expected at this stage.
+- **Toolchain: ready.** Node **v24.22.0** (via nvm-windows) and pnpm **12.14.0** (via Corepack) are installed. The plan has been updated for pnpm 12 (see "Environment findings").
+- **Manual step still needed before Batch D (not before Batch A):** on GitHub, set repo Settings → Pages → Source → **GitHub Actions** (one-time).
+- **Questions:** all 7 in section 6 were answered on 2026-10-20 (spec Q22–Q30). Question 3 changed the plan: articles now follow a metadata standard (constitution III).
 - **Next steps:**
-  1. Confirm the blockers are resolved.
-  2. Get the user's approval of this plan.
-  3. Ask the section 6 questions one at a time.
-  4. Implement Batch A → D in order, following the workflow in `CLAUDE.md` (`implementer` per batch, then `test-runner`; checks at the end of each batch). Work on a branch; commit or push only when the user asks.
+  1. Implement Batch A → D in order, following the workflow in `CLAUDE.md` (`implementer` per batch, then `test-runner`; checks at the end of each batch). Work on a branch; commit or push only when the user asks.
 - **Subagents:** the agents in `.claude/agents/` load at session start. If one isn't found, run it as a general-purpose agent with the same model and tell it to follow that agent's file.
-- Decisions Q14–Q21 (spec) and constitution v0.16.0 are already committed. Section "Environment findings" below mentions uncommitted edits to those documents; that was true while planning but is no longer the case.
+- Decisions Q14–Q21 (spec) and constitution v0.16.0 are committed. Q22–Q32 and constitution v1.1.1 (article metadata standard, Technical Baseline, TypeScript 6 pin) are committed on the `milestone-1` branch.
 
 ---
 
 ## Environment findings (read before Batch A)
 
-- **Local Node is v19.8.1**, which is end-of-life and too old for Nuxt 4. **pnpm is not installed.** The user has to install **Node 24 LTS** (the active LTS on 2026-10-20; Node 26 only reaches LTS around late October 2026), then run `corepack enable pnpm` or `npm i -g pnpm`. This is a prerequisite step for the user or the cli-runner, not for the implementer.
-- `core.autocrlf=true`. Every file in the git index is already LF. `constitution.md` and `portfolio-spec.md` are CRLF in the working tree and have **uncommitted user edits**. Adding `.gitattributes` is safe. **Do NOT run** `git add --renormalize`, `git checkout -- .` or any re-checkout: it would overwrite those edits. The implementer must not touch either document.
+- **Node v24.22.0** (Node 24 LTS) is active via nvm-windows; other versions are also installed, so `nvm use` switches machine-wide. **pnpm 12.14.0** is enabled through Corepack.
+- **pnpm 12 differences from the pnpm 10 this plan was first written for** (tested 2026-10-20 in a scratch project):
+  - pnpm settings in **`.npmrc` are ignored** (`shell-emulator`, `engine-strict` read as `undefined`). Settings go in **`pnpm-workspace.yaml`** in camelCase (`shellEmulator`, `engineStrict`). That file works without a `packages` field for a single-package repo.
+  - The **`"pnpm"` field in `package.json` is no longer read** (pnpm warns and ignores it), and `onlyBuiltDependencies` is not honored in `pnpm-workspace.yaml` either. Build-script approval is the **`allowBuilds`** map in `pnpm-workspace.yaml` (`esbuild: true`), which `pnpm approve-builds <pkg>` writes.
+  - Unapproved build scripts are now an **error** (`ERR_PNPM_IGNORED_BUILDS`, exit 1), not a warning, so the install fails until they are approved.
+  - With `shellEmulator: true`, `FOO=1 cmd` scripts work on Windows. With `engineStrict: true`, a root `engines` mismatch fails the install (`ERR_PNPM_UNSUPPORTED_ENGINE`).
+  - `pnpm run` first checks that dependencies are installed and installs them if not (`verifyDepsBeforeRun`). This is harmless here.
+- `core.autocrlf=true`. Every file in the git index is already LF. Adding `.gitattributes` is safe. **Do NOT run** `git add --renormalize`, `git checkout -- .` or any re-checkout without checking `git status` first, so no uncommitted edits are overwritten. The implementer must not touch `constitution.md` or `portfolio-spec.md`.
 
 ---
 
@@ -53,7 +63,8 @@
 | Package | Justification |
 |---|---|
 | `nuxt@^4`, `vue`, `vue-router` (dependencies) | The framework (decided). Pin `^4` because Nuxt 5 may exist by now. |
-| `typescript`, `vue-tsc` | Required by `nuxt typecheck` for the strict TypeScript gate. |
+| `typescript@^6.0`, `vue-tsc` | Required by `nuxt typecheck` for the strict TypeScript gate. **TypeScript is pinned to 6.x** (user decision, 2026-10-20): TypeScript 7 is the latest release, but typescript-eslint 8.72 (used by `@nuxt/eslint`) only supports `<6.1.0`. Revisit when typescript-eslint supports 7. |
+| `@types/node@^24` | Node type definitions for `nuxt.config.ts` (`node:fs`, `node:url`, `process`); without it `nuxt typecheck` fails with TS2591. Types only, never shipped. Added in A3 with the user's approval (2026-10-20). |
 | `eslint`, `@nuxt/eslint` | Linting, plus formatting through its built-in stylistic rules, so Prettier isn't needed. |
 | `html-validate` | The article HTML validation gate (named in the constitution). |
 | `node-html-parser` | A small, fast HTML parser used at build time for article metadata and body extraction, and reused by the link checker. Much lighter than cheerio or jsdom. It never ships to the browser. |
@@ -63,7 +74,7 @@
 **Deliberately not added:**
 - **linkinator:** replaced by a ~60-line `scripts/check-links.mjs` that reuses node-html-parser.
 - **pa11y-ci:** pulls in Puppeteer as a second browser stack; Playwright + axe is already proposed in the constitution.
-- **cross-env:** replaced by pnpm's built-in `shell-emulator=true`, which makes `FOO=1 cmd` work on Windows.
+- **cross-env:** replaced by pnpm's built-in `shellEmulator: true` (in `pnpm-workspace.yaml`), which makes `FOO=1 cmd` work on Windows.
 - **serve / http-server:** replaced by a ~50-line `node:http` static server.
 - **prettier, @nuxt/fonts, @nuxt/image, sitemap:** not needed this milestone.
 
@@ -161,17 +172,18 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
 
 3. **`.nvmrc`:** `24`
 
-4. **`.npmrc`**
+4. **`pnpm-workspace.yaml`** (pnpm 12 reads its settings here, not from `.npmrc`; no `.npmrc` is needed)
+   ```yaml
+   shellEmulator: true
+   engineStrict: true
    ```
-   shell-emulator=true
-   engine-strict=true
-   ```
+   A2 adds an `allowBuilds` map to this file.
 
 5. **`deploy.config.json`:** `{ "baseURL": "/portfolio/" }`
 
 6. **`package.json`**
    - Fields: `"name": "portfolio"`, `"private": true`, `"type": "module"`.
-   - `"engines": { "node": ">=24 <25", "pnpm": ">=10" }`
+   - `"engines": { "node": ">=24 <25", "pnpm": ">=12" }`
    - `"packageManager": "pnpm@<exact version from pnpm --version>"`
    - Scripts:
      ```
@@ -196,7 +208,6 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
 8. **`nuxt.config.ts`** (initial version):
    ```ts
    import { readFileSync } from 'node:fs'
-   import { fileURLToPath } from 'node:url'
 
    const deployConfig = JSON.parse(readFileSync(new URL('./deploy.config.json', import.meta.url), 'utf8')) as { baseURL: string }
    let baseURL = process.env.NUXT_APP_BASE_URL || deployConfig.baseURL
@@ -213,7 +224,7 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
      nitro: { prerender: { crawlLinks: true, failOnError: true } },
    })
    ```
-   `fileURLToPath` is used in Batch C.
+   Don't import `fileURLToPath` yet: lint fails on an unused import. C1 adds it. ESLint's `nuxt/nuxt-config-keys-order` rule reorders the keys (e.g. `modules` first); let `pnpm lint:fix` do that.
 
 9. **`eslint.config.mjs`**
    ```js
@@ -248,7 +259,8 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
       - `<title>Sample article (test fixture)</title>`
       - `<meta name="description" content="A test-only article used to check the article pipeline. Never published.">`
       - `<meta name="date" content="2026-10-20">`
-      - `<meta name="keywords" content="testing, fixtures">`
+      - `<meta name="updated" content="2026-10-21">`
+      - `<meta name="tags" content="#testing #fixtures/sample">` (exercises `#`, nesting and the metadata standard)
     - The `<body>` contains:
       - an intro `<p>`
       - an `<h2>`, then a `<p>` with an external link and `<code>`
@@ -258,30 +270,47 @@ Each batch ends with its own checks. **After every batch, run `pnpm lint:fix`, t
     - No `<h1>`, `<nav>`, `<style>` or `<script>`. Void tags are written without `/`, and there's no trailing whitespace.
 
 15. **`tests/fixtures/articles/minimal-article.html`**
-    - Only `<meta charset>` and `<title>Minimal article (test fixture)</title>`: no description, date or keywords.
+    - Only `<meta charset>` and `<title>Minimal article (test fixture)</title>`: no description, date, updated, series or tags.
     - The body has two `<p>`s. The first is more than 200 characters long, to exercise summary truncation. This fixture tests the fallbacks.
 
-16. **`scripts/check-article-rules.mjs`**
+16. **`shared/utils/article-meta.ts`**: the article metadata standard (constitution III, spec Q24–Q26) as one pure module. It is the single source for both the build (C5) and the CI article check (item 17).
+    - **No imports, and only erasable TypeScript syntax** (no `enum`, `namespace` or parameter properties), so Node 24 can import the `.ts` file directly through its built-in type stripping.
+    - Exports:
+      - `ARTICLE_META_NAMES = ['description', 'date', 'updated', 'series', 'tags'] as const`
+      - `readMetaMap(entries: Iterable<[name: string, content: string]>): Map<string, string>`: lowercases and trims names, trims content, **skips empty content** (empty counts as missing), and keeps the first occurrence.
+      - `isIsoDate(value: string): boolean`: matches `/^\d{4}-\d{2}-\d{2}$/` **and** is a real calendar date (`new Date(\`${value}T00:00:00Z\`)` is valid and `toISOString().slice(0, 10) === value`, so `2026-02-30` fails).
+      - `TAG_PATTERN = /^(?![\d/]+$)[\p{L}\p{N}_-]+(?:\/[\p{L}\p{N}_-]+)*$/u`: letters, numbers, `-`, `_`; `/` only between segments; not made only of numbers.
+      - `parseTags(content: string): { tags: string[], errors: string[] }`: split on `/\s+/`, drop empties, strip **one** leading `#`, lowercase, test against `TAG_PATTERN` (an invalid token adds an error such as `invalid tag "#has,comma"`), and de-duplicate in first-seen order.
+      - `validateArticleMeta(meta: Map<string, string>): string[]`: returns `` `${name}: ${problem}` `` for each recognized tag that is present but malformed: `date`/`updated` not `isIsoDate`, and every `parseTags` error. `description` and `series` accept any non-empty text. Unrecognized names are ignored.
+      - `tagMatches(tag: string, filter: string): boolean`: `tag === filter || tag.startsWith(\`${filter}/\`)`. It's for F-11 later, but it belongs with the tag rules.
+
+17. **`scripts/check-article-rules.mjs`**
     - Checks every `*.html` in `content/articles/` and `tests/fixtures/articles/`. A missing directory counts as empty.
     - Parse each file with `parse(html, { comment: false, blockTextElements: { script: true, noscript: true, style: true } })` from `node-html-parser`.
+    - Import `readMetaMap` and `validateArticleMeta` from `'../shared/utils/article-meta.ts'` (Node 24 type stripping). If that import doesn't work, **stop and report**; don't copy the rules into the script.
     - Errors to report:
       - the file name, without `.html`, doesn't match `/^[a-z0-9]+(?:-[a-z0-9]+)*$/`
       - `<html lang>` is missing or empty
       - `head title` is missing or has empty text
       - there's no `<body>`
       - `body` contains any of `nav`, `style`, `script` or `h1`
+      - every message from `validateArticleMeta(readMetaMap(<head meta[name] → [name, content]>))`
     - Print `file: message` for each error and exit 1 if there were any. Otherwise print `N article file(s) OK`.
 
 **A2. Install (cli-runner)**
 1. `pnpm add nuxt@^4 vue vue-router`
-2. `pnpm add -D typescript vue-tsc eslint @nuxt/eslint html-validate node-html-parser`
-3. If pnpm warns "Ignored build scripts: …", add exactly those package names to `package.json` → `"pnpm": { "onlyBuiltDependencies": [...] }` (expected: `esbuild`, `@parcel/watcher`, maybe `unrs-resolver`), then re-run `pnpm install`.
-4. If `@nuxt/eslint` reports a peer conflict with ESLint 10, run `pnpm add -D eslint@^9`.
+2. `pnpm add -D typescript@^6.0 vue-tsc eslint @nuxt/eslint html-validate node-html-parser` (TypeScript 6, see section 2)
+3. pnpm 12 fails the install with `ERR_PNPM_IGNORED_BUILDS` ("Ignored build scripts: …") until build scripts are approved. Approve exactly the listed packages with `pnpm approve-builds <pkg> <pkg> …` (expected: `esbuild`, `@parcel/watcher`, maybe `unrs-resolver`), which writes them to `allowBuilds` in `pnpm-workspace.yaml`. Then re-run `pnpm install`. **Report the list to the main session**; don't approve packages beyond the ones pnpm names, and don't use `--all`.
+4. If `@nuxt/eslint` reports a peer conflict with ESLint 10, run `pnpm add -D eslint@^9`. (Done 2026-10-20: no conflict; ESLint 10.13 is supported. The build scripts approved were `esbuild` and `unrs-resolver`.)
 
 **A3. Verify**
 - [ ] `pnpm install` succeeds and runs `nuxt prepare`.
 - [ ] `.nuxt/tsconfig.app.json` exists and its `include` contains `../content/**/*`.
-- [ ] `pnpm typecheck`, `pnpm lint` and `pnpm validate:html` all pass. Also break a fixture on purpose (add `<h1>`) and confirm validation fails, then revert.
+- [ ] `pnpm typecheck`, `pnpm lint` and `pnpm validate:html` all pass. Also break a fixture on purpose and confirm validation fails for each, reverting after each one:
+  - an `<h1>` in the body
+  - `date` set to `Oct 5`, then to `2026-02-30`
+  - `tags` containing `#123`, then `#vue//x`, then `#a,b`
+  - Also confirm an **empty** `tags` or `date` (`content=""`) passes, because empty counts as missing.
 - [ ] `pnpm generate` writes `.output/public/index.html`, and the asset URLs in it start with `/portfolio/_nuxt/`.
 - [ ] `git ls-files --eol` shows new files as `i/lf`.
 
@@ -404,7 +433,8 @@ export const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('${THEME
 - Batch C replaces this list with `<ContactLinks />`.
 
 **B11. `app/layouts/default.vue`**
-`<a class="skip-link" href="#main">Skip to content</a><SiteHeader /><main id="main" class="container site-main" tabindex="-1"><slot /></main><SiteFooter />`. Scoped: `.site-main { padding-block: var(--space-7) }`.
+`<div class="site"><a class="skip-link" href="#main">Skip to content</a><SiteHeader /><main id="main" class="container site-main" tabindex="-1"><slot /></main><SiteFooter /></div>`. Scoped: `.site-main { padding-block: var(--space-7) }`.
+Nuxt requires a layout to have a **single root element** (for layout transitions), and `vue/no-multiple-template-root` enforces it. The wrapper is a plain `<div>`, so landmarks are unchanged (user decision, 2026-10-20).
 
 **B12. `app/app.vue`** (final version)
 ```vue
@@ -493,20 +523,22 @@ export function usePageSeo(seo: PageSeo): void
 
 **C1. `nuxt.config.ts` additions**
 ```ts
+import { fileURLToPath } from 'node:url' // with the other imports
 const includeFixtures = process.env.PORTFOLIO_FIXTURES === '1'
 const articleDirs = [fileURLToPath(new URL('./content/articles/', import.meta.url))]
 if (includeFixtures) articleDirs.push(fileURLToPath(new URL('./tests/fixtures/articles/', import.meta.url)))
 // in defineNuxtConfig:
 runtimeConfig: { articleDirs, repoRoot: fileURLToPath(new URL('./', import.meta.url)) },
-nitro: { prerender: { crawlLinks: true, failOnError: true, routes: ['/', '/404'] } },
+nitro: { prerender: { crawlLinks: false, failOnError: true, routes: prerenderRoutes } },
 ```
+**Changed during C (user decision, 2026-10-20): the crawler is off and routes are listed explicitly.** `prerenderRoutes` is `['/', '/about', '/projects', '/articles', '/resume', '/404']` plus `/articles/<slug>` for every `.html` file in `articleDirs`, read in `nuxt.config.ts`. Reason: with a non-root `baseURL`, Nitro's crawler queues every page both with and without the base and renders it twice. On Windows the two renders race on the payload cache and fail with `EPERM` (nitrojs/nitro#4441, open; fix proposed in PR #4688, not merged). Broken-link detection is covered by `check-links.mjs` (D2). **Revisit `crawlLinks: true` once PR #4688 ships in a Nuxt release.** A new page must be added to `prerenderRoutes`.
 These keys are private: server-only and never sent to the client.
 
 **C2. `package.json`:** add `"generate:fixtures": "PORTFOLIO_FIXTURES=1 pnpm generate"`.
 
 **C3. `shared/types/article.ts`**
 ```ts
-export interface ArticleMeta { slug: string, title: string, description: string, date: string /* YYYY-MM-DD */, tags: string[], series: string | null, seriesPart: number | null, readingMinutes: number }
+export interface ArticleMeta { slug: string, title: string, description: string, date: string /* YYYY-MM-DD */, updated: string | null /* YYYY-MM-DD */, tags: string[] /* lowercase, no '#' */, series: string | null, readingMinutes: number }
 export interface Article extends ArticleMeta { lang: string, bodyHtml: string }
 ```
 Import it with `import type { … } from '#shared/types/article'`.
@@ -520,17 +552,18 @@ Import it with `import type { … } from '#shared/types/article'`.
 **C5. `server/utils/article-parse.ts`** (pure function, so it's ready for Phase 2 unit tests)
 - Exports: `SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/` and `parseArticle({ html, slug, resolveFallbackDate }: { html: string, slug: string, resolveFallbackDate: () => string }): Article`.
 - Parse with `node-html-parser` and the same options as the rules script. Don't list `pre` in `blockTextElements`, so `<pre><code>` gets parsed as elements.
-- Meta map: for `head meta[name]`, take the lowercased, trimmed `name` and trimmed `content`. Skip empty content; the first occurrence wins.
-- Field rules:
+- Meta map: `readMetaMap` from `#shared/utils/article-meta` over `head meta[name]` (`name`, `content`) pairs.
+- **Malformed values:** if `validateArticleMeta(map)` returns any errors, throw an `Error` listing them with the slug. This mirrors the CI article check, so `nuxt generate` fails too (constitution III, spec Q26).
+- Field rules (the standard's tags only; anything else is ignored):
 
   | Field | Source and fallback |
   |---|---|
   | `title` | Collapsed text of `head title`, or `slug` if that's empty |
   | `description` | `meta description`, otherwise a summary of the first `body p` text |
-  | `date` | The first of `date`, `dcterms.date`, `article:published_time` that matches `/^\d{4}-\d{2}-\d{2}/` and parses to a valid Date, cut to its first 10 characters; otherwise `resolveFallbackDate()`, which is only called when needed |
-  | `tags` | `keywords`, else `tags`: split on `,`, trimmed, empty entries dropped, de-duplicated |
+  | `date` | `meta date` (already validated); otherwise `resolveFallbackDate()`, which is only called when needed |
+  | `updated` | `meta updated` (already validated), or `null` |
+  | `tags` | `parseTags(meta tags).tags`, or `[]` |
   | `series` | `meta series`, or `null` |
-  | `seriesPart` | `series-part` parsed as a positive integer, or `null` |
   | `lang` | `html` `lang` attribute, or `'en'` |
   | `bodyHtml` | `body.innerHTML.trim()` |
   | `readingMinutes` | `Math.max(1, Math.round(words / 200))`, where `words` is the body `.text` split on `\s+`, with empties filtered out |
@@ -546,7 +579,7 @@ Import it with `import type { … } from '#shared/types/article'`.
   - Throw an `Error` if the slug fails `SLUG_PATTERN`, or if it's a duplicate across dirs. These are content errors, so failing the build is correct. A missing *tag* never throws.
   - Read the file, then call `parseArticle({ html, slug, resolveFallbackDate: () => getFirstCommitDate(file, repoRoot) })`.
   - Sort by date descending, then slug ascending.
-- `toMeta(a: Article): ArticleMeta`: build the object explicitly from the eight meta fields.
+- `toMeta(a: Article): ArticleMeta`: build the object explicitly from the eight meta fields (`slug`, `title`, `description`, `date`, `updated`, `tags`, `series`, `readingMinutes`).
 
 **C7. Server routes**
 - `server/api/articles.get.ts`: `defineEventHandler(async (): Promise<ArticleMeta[]> => (await getArticles()).map(toMeta))`
@@ -576,7 +609,7 @@ export const projects: Project[] = [{ name: 'Example project (placeholder)', sum
     - `<component :is="headingTag"><NuxtLink :to="\`/articles/${a.slug}\`">{{ a.title }}</NuxtLink></component>`
     - `<p class="meta"><time :datetime="a.date">{{ formatDate(a.date) }}</time> · {{ a.readingMinutes }} min read</p>`
     - `<p>{{ a.description }}</p>`
-    - `<ul v-if="a.tags.length" class="tags" aria-label="Tags">…</ul>`
+    - `<ul v-if="a.tags.length" class="tags" aria-label="Tags">`, with each tag shown as `#{{ tag }}` (spec Q25)
   - No list style; muted color for the meta line.
 - **`ProjectCard.vue`**
   - Prop: `project: Project`.
@@ -609,10 +642,10 @@ export const projects: Project[] = [{ name: 'Example project (placeholder)', sum
   - `usePageSeo({ title: article.title, description: article.description || site.description, type: 'article' })`
   - Template:
     - `<article :lang="article.lang !== 'en' ? article.lang : undefined">`
-    - `<header><h1>{{ article.title }}</h1><p class="meta"><time :datetime>…</time> · {{ article.readingMinutes }} min read</p>` plus the tags list (F-15), then `</header>`
+    - `<header><h1>{{ article.title }}</h1><p class="meta"><time :datetime>…</time> · {{ article.readingMinutes }} min read</p>`, then `<p v-if="article.updated" class="meta">Updated on <time :datetime="article.updated">{{ formatDate(article.updated) }}</time></p>`, plus the tags list shown as `#tag` (F-15), then `</header>`
     - `<!-- eslint-disable-next-line vue/no-v-html -- trusted repo content (constitution III) -->` followed by `<div class="prose" v-html="article.bodyHtml" />`
 - **`pages/resume.vue`:** `<h1>Resume</h1><p>My resume is available as a PDF.</p><p><a :href="resumeUrl">Download resume (PDF)</a></p>`.
-- **`pages/404.vue`:** `<NotFound />`, `usePageSeo({ title: 'Page not found', description: 'This page does not exist.' })`, and `useHead({ meta: [{ name: 'robots', content: 'noindex' }] })`.
+- **`pages/404.vue`:** `<NotFound />` and `usePageSeo({ title: 'Page not found', description: 'This page does not exist.', noindex: true })`. **Changed during C (user decision):** `usePageSeo` has a `noindex` option that adds robots `noindex` and omits the canonical link and `og:url`, because an error page is served at many URLs and shouldn't claim one address. `error.vue` uses it too.
 - **`app/error.vue`**
   - `defineProps<{ error: NuxtError }>()`, with `import type { NuxtError } from '#app'`.
   - Template: `<NuxtLayout><NotFound v-if="error.statusCode === 404" /><section v-else><h1>Something went wrong</h1><p><a :href="homeUrl">Go to the home page</a></p></section></NuxtLayout>`
@@ -641,7 +674,9 @@ This goes **first**, before the CSP loop: `copyFile(join(outputDir, '404', 'inde
 - [ ] typecheck, lint and `validate:html` pass.
 - [ ] `pnpm generate:fixtures` produces these routes, each as `index.html` under its directory: `/`, `about`, `projects`, `articles`, `articles/sample-article`, `articles/minimal-article`, `resume`, `404`. It also produces `404.html` with "Page not found" in its static HTML.
 - [ ] `pnpm generate` without the flag produces **no** `articles/sample-article`, the articles page says "No articles yet", and Home has no latest-articles section.
-- [ ] The minimal fixture shows a truncated first-paragraph description (at most 160 characters plus `…`) in both `<meta name="description">` and the list. Its date is the file's mtime until it's committed, then the git date. It has no tags.
+- [ ] The minimal fixture shows a truncated first-paragraph description (at most 160 characters plus `…`) in both `<meta name="description">` and the list. Its date is the file's mtime until it's committed, then the git date. It has no tags and no "Updated on" line.
+- [ ] The sample fixture shows tags `#testing` and `#fixtures/sample` and an "Updated on 21 October 2026" line.
+- [ ] Put a malformed `date` in a fixture and confirm `pnpm generate:fixtures` fails with the slug and the problem. Revert.
 - [ ] View source of an article page: the `<title>` is unique, and the description, `og:*`, `twitter:*` and canonical tags are all present. Canonical starts with `https://moreno-m2698.github.io/portfolio/`.
 - [ ] The `<pre>` whitespace is preserved in the rendered article.
 - [ ] With JavaScript disabled, all pages, the articles and the project card are readable in `pnpm preview`.
@@ -707,7 +742,7 @@ This goes **first**, before the CSP loop: `copyFile(join(outputDir, '404', 'inde
 - Trigger on `push` to `main`, `pull_request`, and `workflow_dispatch`. Top-level `permissions: { contents: read }`.
 - **Job `check`** (ubuntu-latest), steps in order:
   1. `actions/checkout@v5` with `fetch-depth: 0`
-  2. `pnpm/action-setup@v4` (reads `packageManager`)
+  2. `pnpm/action-setup@v4` (reads `packageManager`; confirm the version used supports pnpm 12)
   3. `actions/setup-node@v5` with `node-version-file: .nvmrc` and `cache: pnpm`
   4. `pnpm install --frozen-lockfile`
   5. `pnpm exec playwright install --with-deps chromium`
@@ -744,7 +779,7 @@ This goes **first**, before the CSP loop: `copyFile(join(outputDir, '404', 'inde
 |---|---|
 | Strict TypeScript | `typescript.strict: true`; `pnpm typecheck` runs `nuxt typecheck` (vue-tsc over the Nuxt 4 project references). `content/` is added to the app tsconfig include. |
 | Lint and format | `@nuxt/eslint` with stylistic rules; `--max-warnings 0`. |
-| Article HTML validation | `html-validate` (recommended, plus 2 documented rule options) over articles **and** fixtures, plus `check-article-rules.mjs`: body has no nav, style, script or h1; `lang` and `title` present; slug format valid. |
+| Article HTML validation | `html-validate` (recommended, plus 2 documented rule options) over articles **and** fixtures, plus `check-article-rules.mjs`: body has no nav, style, script or h1; `lang` and `title` present; slug format valid; metadata values match the standard (shared rules in `shared/utils/article-meta.ts`). |
 | Build without broken internal links | `nuxt generate` with `failOnError: true`; `check-links.mjs` checks every `href`/`src` and same-page fragment, and enforces the base path. |
 | axe on every built page | `check-a11y.mjs` scans every `.html` in the output, under both light and dark color schemes, with WCAG 2.0/2.1/2.2 A and AA tags. It also fails on CSP violations and page errors. |
 | No-JavaScript content (II) | Every route is prerendered. The toggle is the only client-only element. The 404 page is static HTML. Checked by hand in B17 and C14. |
@@ -762,28 +797,29 @@ This goes **first**, before the CSP loop: `copyFile(join(outputDir, '404', 'inde
 3. **Unhead v2 inline script syntax** (`innerHTML`, `tagPriority`).
 4. **Generate behavior:** whether `nuxt generate` still writes SPA-shell `200.html` and `404.html`; which inline scripts Nuxt emits (the `__NUXT__` config, an importmap if `entryImportMap` is on); and whether the prerender crawler tries to prerender `/resume.pdf`. If it does, add `nitro.prerender.ignore: ['/resume.pdf']`.
 5. **`import.meta.url`** inside `nuxt.config.ts` (jiti).
-6. **pnpm 10 build-script approval** (`pnpm.onlyBuiltDependencies`; pnpm 11 may rename it), and that `shell-emulator` still works via `.npmrc`.
+6. **pnpm 12** (verified 2026-10-20): settings go in `pnpm-workspace.yaml` (`shellEmulator`, `engineStrict`, `allowBuilds`); `.npmrc` pnpm settings and the `package.json` `"pnpm"` field are ignored. Still to check: that `pnpm/action-setup` supports pnpm 12 (see D6).
 7. **ESLint 9 vs 10** compatibility with `@nuxt/eslint`.
-8. **html-validate:** the `doctype-style` and `heading-level` option names; what happens with an empty `content/articles` glob.
+8. **html-validate:** the `doctype-style` and `heading-level` option names; what happens with an empty `content/articles` glob; and that it doesn't flag the standard's `<meta name>` values (`date`, `updated`, `series`, `tags`).
 9. **`@axe-core/playwright`** export form, and its `playwright-core` peer under pnpm.
 10. **GitHub Actions** major versions.
 11. **Node 24** as the active LTS; `fs.readdir({ recursive: true })`.
+12. **Node 24 type stripping:** that `scripts/check-article-rules.mjs` can `import` `shared/utils/article-meta.ts` directly with no flag, and that the `\p{L}` regex works in both Node and the Nitro build.
 
 ## 6. Questions for the user (defaults are built into the plan)
 
-1. **Theme toggle states:** the plan uses a two-state light/dark button (`aria-pressed`). Once you choose, there's no way back to "follow the OS" except clearing storage. Is that OK for the MVP, or do you want three states (System / Light / Dark)?
-2. **Date fallback for uncommitted articles:** the constitution defines only the date of the first git commit. For a file that isn't committed yet (local drafts), the plan falls back to the file's modified time so the build never fails. OK?
-3. **Recognized meta names:** since there's no fixed standard, the build has to look for *some* names. Proposed:
+1. **Answered (spec Q22): two states, as planned.** **Theme toggle states:** the plan uses a two-state light/dark button (`aria-pressed`). Once you choose, there's no way back to "follow the OS" except clearing storage. Is that OK for the MVP, or do you want three states (System / Light / Dark)?
+2. **Answered (spec Q23, constitution v0.16.1): file modified time, as planned.** **Date fallback for uncommitted articles:** the constitution defines only the date of the first git commit. For a file that isn't committed yet (local drafts), the plan falls back to the file's modified time so the build never fails. OK?
+3. **Answered (spec Q24–Q26, constitution v1.0.0): replaced by a metadata standard.** Required `<title>`; optional `description`, `date`, `updated`, `series`, Obsidian-style `tags`; no `keywords` or `series-part`; malformed values fail the article check. The original question, for the record: **Recognized meta names:** since there's no fixed standard, the build has to look for *some* names. Proposed:
    - date: `date`, `dcterms.date`, `article:published_time`
    - tags: `keywords`, else `tags`
    - series: `series` and `series-part`
    - description: `description`
 
    Should these be recorded in the spec as "names the build recognizes"?
-4. **Reading speed:** reading time uses 200 words per minute, minimum 1 minute. OK?
-5. **Home "Resume" CTA:** the plan links straight to `/resume.pdf` rather than to the `/resume` page. OK?
-6. **Search and tag controls:** the plan omits them from the Articles list this milestone instead of showing placeholders that don't work. OK?
-7. **Record in the constitution:** should the main session record these decisions (a version bump and Technical Baseline rows, per CLAUDE.md)?
+4. **Answered (spec Q27): 200 wpm, minimum 1, as planned.** **Reading speed:** reading time uses 200 words per minute, minimum 1 minute. OK?
+5. **Answered (spec Q28): straight to the PDF, as planned.** **Home "Resume" CTA:** the plan links straight to `/resume.pdf` rather than to the `/resume` page. OK?
+6. **Answered (spec Q29): omitted, as planned.** **Search and tag controls:** the plan omits them from the Articles list this milestone instead of showing placeholders that don't work. OK?
+7. **Answered (spec Q30, constitution v1.1.0): recorded now.** **Record in the constitution:** should the main session record these decisions (a version bump and Technical Baseline rows, per CLAUDE.md)?
    - Playwright + `@axe-core/playwright` and html-validate change from Proposed to Decided.
    - The post-build CSP hashing approach, and the `style-src 'unsafe-inline'` gap.
    - `deploy.config.json` as the single source for the base URL.

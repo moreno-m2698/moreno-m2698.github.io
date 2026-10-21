@@ -1,0 +1,68 @@
+/* Breakpoints: 40rem, 64rem. Use literally in `@media (min-width: …)` only; never max-width for layout. */
+
+:root {
+  color-scheme: light dark;
+
+  /* Colors: light-dark(light, dark). Text pairs are AA or better. */
+  --color-bg: light-dark(#ffffff, #121212);
+  --color-surface: light-dark(#f5f5f5, #1e1e1e);
+  --color-text: light-dark(#1a1a1a, #ececec);
+  /* About 7:1 on bg, at least 6.6:1 on surface. */
+  --color-text-muted: light-dark(#555555, #a3a3a3);
+  /* Decorative only. */
+  --color-border: light-dark(#d4d4d4, #3a3a3a);
+  /* 3:1 or better, for UI component edges. */
+  --color-border-strong: light-dark(#767676, #8a8a8a);
+  /* 6.7:1 / 8.7:1. */
+  --color-link: light-dark(#1d4ed8, #8ab4f8);
+  --color-focus: light-dark(#1d4ed8, #8ab4f8);
+
+  /* Fonts */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Type scale */
+  --font-size-0: .875rem;
+  --font-size-1: 1rem;
+  --font-size-2: 1.25rem;
+  --font-size-3: 1.5rem;
+  --font-size-4: 2rem;
+  --font-size-5: 2.5rem;
+  --line-height-tight: 1.2;
+  --line-height-base: 1.6;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Radii and borders */
+  --radius-1: .25rem;
+  --radius-2: .5rem;
+  --border-width: 1px;
+  --focus-width: 3px;
+
+  /* Layout */
+  --measure: 65ch;
+  --page-max: 64rem;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --easing-standard: cubic-bezier(.2, 0, 0, 1);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
