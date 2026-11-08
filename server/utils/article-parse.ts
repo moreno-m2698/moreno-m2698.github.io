@@ -1,6 +1,6 @@
 import { parse } from 'node-html-parser'
 import type { Article } from '#shared/types/article'
-import { parseTags, readMetaMap, validateArticleMeta } from '#shared/utils/article-meta'
+import { isIsoDate, parseTags, readMetaMap, validateArticleMeta } from '#shared/utils/article-meta'
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
@@ -15,7 +15,13 @@ function summarize(text: string): string {
   return `${space > 0 ? cut.slice(0, space) : cut}…`
 }
 
-// Parses one article file. Throws if the metadata is malformed (constitution III).
+// Returns the value only if it is a real YYYY-MM-DD date.
+function validDate(value: string | undefined): string | undefined {
+  return value !== undefined && isIsoDate(value) ? value : undefined
+}
+
+// Parses one article file. Malformed metadata logs a warning and falls back; it never fails the build
+// (constitution III, spec Q41).
 export function parseArticle({ html, slug, resolveFallbackDate }: { html: string, slug: string, resolveFallbackDate: () => string }): Article {
   // Same options as scripts/check-article-rules.mjs, except that <pre> is not treated as text, so <pre><code> is parsed.
   const root = parse(html, {
@@ -31,7 +37,7 @@ export function parseArticle({ html, slug, resolveFallbackDate }: { html: string
 
   const problems = validateArticleMeta(meta)
   if (problems.length > 0) {
-    throw new Error(`Article "${slug}" has invalid metadata: ${problems.join('; ')}`)
+    console.warn(`[articles] "${slug}" has invalid metadata, using fallbacks: ${problems.join('; ')}`)
   }
 
   const body = root.querySelector('body')
@@ -46,10 +52,9 @@ export function parseArticle({ html, slug, resolveFallbackDate }: { html: string
     slug,
     title,
     description,
-    date: meta.get('date') ?? resolveFallbackDate(),
-    updated: meta.get('updated') ?? null,
+    date: validDate(meta.get('date')) ?? resolveFallbackDate(),
+    updated: validDate(meta.get('updated')) ?? null,
     tags,
-    series: meta.get('series') ?? null,
     readingMinutes: Math.max(1, Math.round(words / 200)),
     lang: root.querySelector('html')?.getAttribute('lang')?.trim() || 'en',
     bodyHtml: body?.innerHTML.trim() ?? '',

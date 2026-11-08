@@ -1,8 +1,9 @@
-// Article metadata standard (constitution III). Single source for the build and the CI article check.
+// Article metadata standard (constitution III). Single source for the build (which warns and falls back)
+// and `pnpm validate:html` (which reports problems on request).
 // Keep this file free of imports and TypeScript-only syntax beyond type annotations, so Node 24 can
 // import it directly through built-in type stripping.
 
-export const ARTICLE_META_NAMES = ['description', 'date', 'updated', 'series', 'tags'] as const
+export const ARTICLE_META_NAMES = ['description', 'date', 'updated', 'tags'] as const
 
 // Lowercases and trims names, trims content, skips empty content (empty counts as missing),
 // and keeps the first occurrence of each name.
