@@ -4,58 +4,41 @@ Personal portfolio site: Vue 3 + Nuxt 4, statically generated and hosted on GitH
 
 ## Source documents
 
-Read these before planning or implementing anything:
+- [`constitution.md`](constitution.md): the principles (accessibility, static-first, content rules, styling, privacy, hosting). They are **goals checked at review time**, not gates.
+- [`portfolio-spec.md`](portfolio-spec.md): what to build (site map, page requirements, features in scope and removed for now, decisions log).
+- [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md): history of the first build. Read only when you need the background on how something was built.
 
-- [`constitution.md`](constitution.md): the governing principles (accessibility, static-first, content rules, styling, performance, privacy, quality gates, hosting). **It takes precedence** over the spec, plans and code.
-- [`portfolio-spec.md`](portfolio-spec.md): what to build (site map, page requirements, feature IDs F-01 to F-25, decisions log).
+## How we work (spec Q37–Q45)
 
-Rules:
-- Every feature MUST trace back to a feature ID in the spec. If a request isn't in the spec, raise it as a spec proposal before building it.
-- If work would break a constitution principle, stop and say so. Don't work around it quietly.
-- When a decision is made, update the relevant document (the constitution's version and date, and the spec's decisions log) in the same change.
+- **The owner leads.** They write most of the HTML, CSS and content. Help when asked, working directly in the main session. Don't delegate to a subagent pipeline, and don't add process the owner didn't ask for.
+- **Speed over ceremony.** Don't run checks after every change, and don't block work on failed checks. Only a failed build stops a deploy.
+- **Work on `main`.** Pushing to `main` deploys if the build succeeds. Use a short-lived branch only for risky changes (a redesign, build or CI changes). Commit or push only when the owner asks.
+- **Reviews only on request**, through `/review-frontend` (`.claude/skills/review-frontend/`). Don't offer unprompted CSS/HTML reviews after small changes.
+- **Scope:** if a request touches a feature in the spec's "Removed for now" list, mention it and, if the owner confirms, move it back into scope in the spec. Write a plan document only for large changes.
+- **Decisions:** when the owner makes a decision about scope or principles, record it in the spec's decisions log (and bump the constitution's version and date if a principle changes). Ask clarifying questions one at a time.
+- If a change would clearly work against a constitution principle (e.g. a third-party script, or breaking keyboard access), say so briefly, then do what the owner decides.
 
 ## Current status
 
-- **Milestone 1** (scaffold, layout, skeleton pages, checks, deploy): plan in [`docs/plans/milestone-1.md`](docs/plans/milestone-1.md), approved 2026-10-20. **Done and merged to `main`** (PR #1). The manual keyboard and screen reader pass is not recorded as done yet.
-- **Hosting:** Pages source is GitHub Actions. On 2026-10-21 the repo was renamed from `portfolio` to `moreno-m2698.github.io` and the base URL changed to `/` (spec Q36).
-- **Prerender routes are explicit** (`nuxt.config.ts`): a new page must be added to `prerenderRoutes` (the crawler is off because of a Nitro bug, nitrojs/nitro#4441).
-- **Toolchain:** Node **24 LTS** (v24.22.0, managed with nvm-windows), **pnpm 12** (via Corepack), TypeScript **6.x** (pinned; see the constitution's Technical Baseline).
+- **Priority: the home page** (spec Q45). Its content is fully open; the current hero, latest articles and contact links are placeholders. Other pages wait until Home is in a good state.
+- About and Projects will exist, but their design isn't decided (spec Q44). Don't let them block Home.
+- The site is live with placeholder content: `content/site.ts`, `content/projects.ts`, the About page and `public/resume.pdf` (replace under the same name; no address or phone number).
+- The manual keyboard and screen reader pass hasn't been done yet. It's due before a milestone that matters, like sharing the site with recruiters.
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Dev server, with test fixture articles included |
+| `pnpm generate` | Production build to `.output/public` (adds the CSP) |
+| `pnpm preview` | Serve the built output at `http://localhost:4173/` |
+| `pnpm check` | All checks: typecheck, lint, article HTML, build with fixtures, links, axe (light and dark) |
+| `pnpm typecheck` / `pnpm lint` / `pnpm lint:fix` / `pnpm validate:html` / `pnpm check:links` / `pnpm check:a11y` | Individual checks (`check:links` and `check:a11y` need a build first) |
+
+## Technical notes
+
+- **Prerender routes are explicit** (`nuxt.config.ts`): a new page must be added to `prerenderRoutes` (the crawler is off because of a Nitro bug, nitrojs/nitro#4441; revisit when PR #4688 ships).
+- **Base URL** comes from `deploy.config.json`. Don't hard-code root paths; use `NuxtLink` or `assetUrl()`.
+- **Toolchain:** Node **24 LTS** (nvm-windows), **pnpm 12** (Corepack), TypeScript **6.x** (pinned until typescript-eslint supports 7).
+- pnpm settings live in `pnpm-workspace.yaml` (camelCase, e.g. `shellEmulator`, `allowBuilds`); pnpm 12 ignores them in `.npmrc` and in the `package.json` `"pnpm"` field.
 - If pnpm shows a Corepack download prompt in a non-interactive shell, set `COREPACK_ENABLE_DOWNLOAD_PROMPT=0`.
-
-## Next up
-
-Open items after Milestone 1, roughly in priority order. Plan each one through the feature workflow below.
-1. **Manual keyboard and screen reader pass** over every page in both themes (constitution I and VIII). Required, not yet done.
-2. **Real content** (the site is live with placeholders): `content/site.ts` (name, tagline, LinkedIn, email), `content/projects.ts`, About page text (F-04 to F-07; the photo is still to come), and `public/resume.pdf`, replaced under the same name with no address or phone number.
-3. **Phase 2 quality gates.** They SHOULD be in place within the first iteration after launch (constitution VIII): Vitest unit tests (metadata parsing and fallbacks, tags, reading time) and Playwright end-to-end tests (navigation, theme toggle, later search).
-4. **Remaining MVP features:** F-11 (tag filter; `tagMatches` already exists in `shared/utils/article-meta.ts`), F-12 (search), F-13 (series links), F-16 (Shiki highlighting), F-17/F-18 (article images and diagrams), F-23 (motion), F-24 (sitemap), F-25 (share image).
-5. **Confirm the performance budget** after a real build (constitution, Open Questions).
-6. **Revisit later:** turn the prerender crawler back on when nitrojs/nitro PR #4688 ships; TypeScript 7 once typescript-eslint supports it.
-
-## Model usage
-
-Work is delegated to the project subagents in `.claude/agents/`, each of which has its model set:
-
-| Work | Agent | Model |
-|---|---|---|
-| Planning: implementation plans, architecture, breaking features down | `planner` | **Opus** |
-| Finding requirement gaps before and during a feature | `requirements-checker` | **Haiku** |
-| Writing code | `implementer` | **Haiku** |
-| Running tests and quality gates | `test-runner` | **Haiku** |
-| Running CLI commands (pnpm, nuxt, git, gh) | `cli-runner` | **Haiku** |
-| Web research (docs, library versions, APIs) | `researcher` | **Haiku** |
-
-Feature workflow:
-1. `requirements-checker` returns clarifying questions. Subagents can't talk to the user, so the main session asks them **one question at a time** and records each answer in the spec or constitution.
-2. `planner` produces the plan, and the user approves it.
-3. `implementer` writes the code. Give it a self-contained brief: the feature ID, the approved plan, the relevant constitution principles, the files involved, and what "done" means.
-4. `test-runner` runs the quality gates. Failures go back to `implementer`.
-5. If new requirement questions come up mid-feature, go back to step 1 for those questions before continuing.
-- The main session reviews subagent output against the constitution's quality gates before anything is committed.
-- The agents in `.claude/agents/` load at session start. If one isn't found (for example, it was added mid-session), run a general-purpose agent with the same model and tell it to read and follow that agent's file.
-
-## Working conventions
-
-- Package manager: **pnpm 12** (lockfile committed). pnpm settings live in `pnpm-workspace.yaml` (camelCase, e.g. `shellEmulator`, `allowBuilds`); pnpm 12 ignores them in `.npmrc` and in the `package.json` `"pnpm"` field.
-- Work on a branch. Merge to `main` only after the Phase 1 quality gates pass (constitution, Principle VIII).
-- Commit or push only when the user asks.

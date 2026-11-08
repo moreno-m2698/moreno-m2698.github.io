@@ -55,7 +55,6 @@ export function toMeta(article: Article): ArticleMeta {
     date: article.date,
     updated: article.updated,
     tags: article.tags,
-    series: article.series,
     readingMinutes: article.readingMinutes,
   }
 }
