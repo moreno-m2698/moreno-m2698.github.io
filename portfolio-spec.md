@@ -62,13 +62,13 @@ The page will exist; how it's built isn't decided (Q44). Ideas from the original
 - Title, date, "Updated on" line when set, reading time, tags, and the article body styled by the prose stylesheet.
 
 ### 5.6 Resume
-- **PDF only**, committed and served at `/resume.pdf`. There is no `/resume` page (Q46): every Resume link, including the main navigation, opens the PDF directly.
+- **PDF only**, committed and served at `/resume.pdf`. There is no `/resume` page (Q46): every Resume link opens the PDF directly.
 
 ### 5.7 Custom 404
 - A styled "page not found" page that works without JavaScript.
 
 ### 5.8 Global (every page)
-- Navigation to all main pages, always visible (wraps on narrow screens).
+- The site header holds **only the theme toggle** (Q48). Navigation to the main pages lives on the home page (and the footer as needed), not in a site-wide header.
 - Contact is **links only** (no contact form): LinkedIn, GitHub, Email.
 - Light/dark mode: follows the OS by default, with a manual toggle.
 
@@ -154,7 +154,7 @@ Not in scope. Any of these can come back by asking for it and moving it to §7.1
 | Q14 | Site identity values (name, tagline, contact URLs)? | **One typed file, `content/site.ts`**, with clearly marked placeholders until filled in |
 | Q15 | Visual design for the first build? | **Neutral placeholder palette + system font stack** as design tokens; real design applied later by changing tokens |
 | Q16 | Resume PDF before the real one exists? | **Placeholder PDF** at `/resume.pdf` (no personal details), replaced under the same name |
-| Q17 | Mobile navigation? | **All links always visible, wrapping** on narrow screens; no menu button, no JavaScript |
+| Q17 | Mobile navigation? | **All links always visible, wrapping** on narrow screens; no menu button, no JavaScript *(superseded by Q48: no site-wide navigation in the header)* |
 | Q18 | Breakpoints? | **40rem and 64rem** (`min-width`, mobile-first) |
 | Q19 | Article for testing before real articles exist? | **Test-only sample article** in a fixtures folder; never published |
 | Q20 | Empty states? | Short text ("No articles yet", "No projects yet"); Home's latest-articles section hidden when empty |
@@ -185,3 +185,4 @@ Not in scope. Any of these can come back by asking for it and moving it to §7.1
 | Q45 | What's the priority, and what must Home contain? | **Home first**, and its contents are **fully open** until the owner has built something they like. Other pages come after |
 | Q46 | Does the resume need its own page? | **No.** The `/resume` page is removed; every Resume link (main navigation, Home, footer) opens `/resume.pdf` directly (2026-11-11) |
 | Q47 | What does the theme button say? | **The theme a click switches to** ("Switch to dark theme" / "Switch to light theme"). `aria-pressed` is dropped, because a toggle button's label must not change (2026-11-11) |
+| Q48 | What goes in the site header? | **Only the theme toggle.** The site name and main navigation are removed from the header; the home page carries the navigation. Other pages have no header navigation for now (2026-11-11) |
