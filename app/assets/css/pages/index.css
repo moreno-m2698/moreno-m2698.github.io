@@ -11,33 +11,45 @@
  * Sizes between breakpoints are fluid (clamp), so the hero adapts at every width.
  */
 .home-hero {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(var(--space-4), 2.5vw, var(--space-6));
-  align-items: start;
-  margin-block-end: clamp(var(--space-6), 8vw, var(--space-8));
+  display: flex;
+  overflow: hidden;
+  column-gap: .5rem;
+  align-content: start;
+  /* cqi units inside the hero (the name's font size) measure the hero's width. */
+  container-type: inline-size;
 }
 
 /* Let the title and description sit directly on the hero grid. */
-.home-hero > hgroup {
-  display: contents;
-}
 
-.home-hero__title {
-  grid-column: 1 / -1;
-  grid-row: 1;
+.segment {
+  display: block;
   font-family: var(--font-display);
   font-weight: var(--font-weight-normal);
-  /* Scales with the screen so "Michael" never overflows on phones. */
-  font-size: clamp(3rem, 17vw, 11rem);
-  line-height: .85;
+  /* "MICHAEL" is about 9.05em wide, so 10.8% of the hero's width fits it with a little room to spare. */
+  font-size: 10.8cqi;
+  line-height: 1;
   letter-spacing: -.02em;
+  text-transform: uppercase;
 }
 
-.home-hero__description {
+/* .home-hero__title {
+
+  display: block;
   grid-column: 1;
-  grid-row: 2;
-  align-self: end;
+  grid-row: 1 / span 5;
+  width: max-content;
+  height: .74em;
+  transform: rotate(90deg)
+    translateX(0.75em);
+  white-space: nowrap;
+  text-transform: uppercase;
+  clip-path: polygon(0% -2%, 104% -2%, 104% 102%, 0% 102%);
+} */
+
+.home-hero__description {
+  margin-block-start: .5rem;
+  grid-column: 3;
+  grid-row: 3;
   /* About 1rem on small phones, up to 1.5rem on wide screens. */
   font-size: clamp(var(--font-size-1), .9rem + .75vw, var(--font-size-3));
   line-height: 1.1;
@@ -46,8 +58,8 @@
 }
 
 .home-hero__accent-image {
-  grid-column: 2;
-  grid-row: 2 / span 2;
+  grid-column: 3;
+  grid-row: 1;
   aspect-ratio: .8;
   border: 2px solid var(--color-text);
   border-radius: var(--radius-2);

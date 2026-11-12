@@ -10,25 +10,20 @@ usePageSeo({ description: site.description })
 <template>
   <section class="home-hero">
     <hgroup>
-      <h1 class="home-hero__title">Michael Moreno</h1>
-      <p class="home-hero__description">The personal site and portfolio of Portland-based full-stack software engineer Michael Moreno</p>
+      <h1 class="home-hero__title">
+        <span class="segment segment--first">Michael</span>
+        <span class="segment segment--second">Moreno</span>
+      </h1>
+      <p class="home-hero__description">The portfolio site of Portland-based full-stack software engineer Michael Moreno</p>
     </hgroup>
-    <nav class="home-nav">
+  </section>    
+     <nav class="home-nav">
       <ul>
         <li><a :href="resumeUrl">Resume</a></li>
         <li><NuxtLink to="/projects">Projects</NuxtLink></li>
         <li><NuxtLink to="/about">About</NuxtLink></li>
       </ul>
     </nav>
-    <div class="home-hero__accent-image">
-      <img
-        :src="firImageUrl"
-        alt=""
-        width="408"
-        height="612"
-      >
-    </div>
-  </section>
   <section class="home-about">
     <h2>About the developer</h2>
     <p>I'm Michael, full-stack developer with experience working in the software solutions space.</p>
