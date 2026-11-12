@@ -1,14 +1,8 @@
 /* Home page styles, scoped to app/pages/index.vue. Mobile-first: add larger layouts at 40rem and 64rem. */
 
 /*
- * Hero: an editorial grid. A very large name on top, the description and nav
- * underneath, and the accent image to the side.
- *
- *   Small (base)   2 columns, text | image, with the image beside the description
- *   40rem and up   2 columns, wider text, image capped and pushed to the right
- *   64rem and up   12 columns: text on the left half, image in the right third
- *
- * Sizes between breakpoints are fluid (clamp), so the hero adapts at every width.
+ * Hero: a very large stacked name with the description underneath.
+ * The name's size follows the hero's width (cqi), so it fits at every width.
  */
 .home-hero {
   display: flex;
@@ -18,8 +12,6 @@
   /* cqi units inside the hero (the name's font size) measure the hero's width. */
   container-type: inline-size;
 }
-
-/* Let the title and description sit directly on the hero grid. */
 
 .segment {
   display: block;
@@ -32,69 +24,56 @@
   text-transform: uppercase;
 }
 
-/* .home-hero__title {
-
-  display: block;
-  grid-column: 1;
-  grid-row: 1 / span 5;
-  width: max-content;
-  height: .74em;
-  transform: rotate(90deg)
-    translateX(0.75em);
-  white-space: nowrap;
-  text-transform: uppercase;
-  clip-path: polygon(0% -2%, 104% -2%, 104% 102%, 0% 102%);
-} */
-
 .home-hero__description {
   margin-block-start: .5rem;
-  grid-column: 3;
-  grid-row: 3;
-  /* About 1rem on small phones, up to 1.5rem on wide screens. */
-  font-size: clamp(var(--font-size-1), .9rem + .75vw, var(--font-size-3));
   line-height: 1.1;
   letter-spacing: -.01em;
   text-wrap: balance;
 }
 
-.home-hero__accent-image {
-  grid-column: 3;
-  grid-row: 1;
-  aspect-ratio: .8;
-  border: 2px solid var(--color-text);
-  border-radius: var(--radius-2);
-  /* Clips the image's corners to the rounded border. */
-  overflow: hidden;
+/* The About and Projects sections share one look: a bordered title over larger body text. */
+.home-about,
+.home-projects {
+  /* Top only, so neighbouring sections are 2rem apart instead of 4rem. */
+  padding-block-start: 2rem;
 }
 
-.home-hero__accent-image img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.home-projects {
+  padding-block-end: 2rem;
 }
 
-.home-nav {
-  grid-column: 1;
-  grid-row: 3;
+.home-about__title,
+.home-projects__title {
+  font-size: 4rem;
+  text-transform: uppercase;
+  line-height: .9;
+  padding-block: 1rem;
+  border-block: 2px solid var(--color-text);
+  margin-block-end: 2rem;
 }
 
-.home-nav ul {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.home-about__content,
+.home-projects__content {
+  font-size: 1.25rem;
+  line-height: 1.2;
 }
 
-.home-nav a {
-  display: inline-block;
-  padding-block: var(--space-1);
-  font-size: clamp(var(--font-size-1), .9rem + .5vw, var(--font-size-2));
-  line-height: var(--line-height-tight);
-  text-decoration: none;
+.home-about__content > :not(h3),
+.home-projects__content > :not(h3) {
+  margin-block-end: 1em;
 }
 
-.home-nav a:hover {
-  text-decoration: underline;
+/* The section's padding handles the gap after the last block. */
+.home-about__content > :last-child,
+.home-projects__content > :last-child {
+  margin-block-end: 0;
+}
+
+.home-about__content h3,
+.home-projects__content h3 {
+  text-transform: uppercase;
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
 }
 
 /* Medium: 40rem and up */
@@ -102,37 +81,11 @@
   .home-hero__description {
     max-width: 28ch;
   }
-
-  /* Keep the photo from growing too large beside the text. */
-  .home-hero__accent-image {
-    justify-self: end;
-    width: min(100%, 20rem);
-  }
 }
 
 /* Large: 64rem and up */
 @media (min-width: 64rem) {
-  .home-hero {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-
   .home-hero__description {
-    grid-column: 1 / span 6;
     max-width: 32ch;
-  }
-
-  .home-hero__accent-image {
-    grid-column: 9 / span 4;
-    width: 100%;
-  }
-
-  .home-nav {
-    grid-column: 1 / span 6;
-  }
-
-  .home-nav ul {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: var(--space-1) var(--space-5);
   }
 }

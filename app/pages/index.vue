@@ -2,8 +2,6 @@
 import { site } from '~~/content/site'
 
 const resumeUrl = assetUrl('/resume.pdf')
-const firImageUrl = assetUrl('/douglas-fir-stock-photo.jpg')
-
 usePageSeo({ description: site.description })
 </script>
 
@@ -17,34 +15,53 @@ usePageSeo({ description: site.description })
       <p class="home-hero__description">The portfolio site of Portland-based full-stack software engineer Michael Moreno</p>
     </hgroup>
   </section>    
-     <nav class="home-nav">
-      <ul>
-        <li><a :href="resumeUrl">Resume</a></li>
-        <li><NuxtLink to="/projects">Projects</NuxtLink></li>
-        <li><NuxtLink to="/about">About</NuxtLink></li>
-      </ul>
-    </nav>
-  <section class="home-about">
-    <h2>About the developer</h2>
-    <p>I'm Michael, full-stack developer with experience working in the software solutions space.</p>
-    <h3>What I am good at</h3>
-    <ul>
-      <li>JavaScript & TypeScript</li>
-      <li>HTML & CSS</li>
-      <li>React.js & Vue.js</li>
-      <li>Java</li>
-      <li>Python</li>
-      <li>PHP</li>
-      <li>Spring Boot</li>
-      <li>Web Content Accessibility Guidelines 2.1 (WCAG)</li>
-      <li>AWS</li>
-    </ul>
-    <h3>Where to find me</h3>
-    <ul>
-      <li><a :href="site.contact.githubUrl">GitHub</a></li>
-      <li><a :href="resumeUrl">Resume</a></li>
-      <li><a :href="site.contact.linkedinUrl">LinkedIn</a></li>
-    </ul>
+  <section class="home-about reveal-links">
+    <h2 class="home-about__title">About me</h2>
+    <div class="home-about__content">
+      <p>Greetings! I'm Michael, a full-stack developer in the PNW who's interested in creating applications that are thoughtful, functional, and accessible to all.</p>
+      <div>
+        <h3>What I know</h3>
+        <ul>
+          <li>JavaScript & TypeScript</li>
+          <li>HTML & CSS</li>
+          <li>React.js & Vue.js</li>
+          <li>Java</li>
+          <li>Python</li>
+          <li>PHP</li>
+          <li>Spring Boot</li>
+          <li>Web Content Accessibility Guidelines 2.1 (WCAG)</li>
+          <li>AWS</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Where to find me</h3>
+        <ul>
+          <li><a :href="site.contact.githubUrl">GitHub</a></li>
+          <li><a :href="resumeUrl">Resume</a></li>
+          <li><a :href="site.contact.linkedinUrl">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section class="home-projects reveal-links">
+    <h2 class="home-projects__title">Projects</h2>
+    <div class="home-projects__content">
+      <div>
+        <h3>Full-Stack Match Analytics App</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <a href="https://github.com/moreno-m2698">Full-Stack Match Analytics App on GitHub</a>
+      </div>
+      <div>
+        <h3>Discord Media Manager Bot</h3>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <a href="https://github.com/moreno-m2698">Discord Media Manager Bot on GitHub</a>
+      </div>
+      <div>
+        <h3>Full-Stack Music Web App</h3>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        <a href="https://github.com/moreno-m2698">Full-Stack Music Web App on GitHub</a>
+      </div>
+    </div>
   </section>
 </template>
 

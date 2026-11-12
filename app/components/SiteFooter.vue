@@ -1,5 +1,5 @@
 <template>
-  <footer class="site-footer">
+  <footer class="site-footer reveal-links">
     <div class="container">
       <ContactLinks />
     </div>
