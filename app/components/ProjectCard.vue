@@ -67,5 +67,4 @@ const imageSrc = computed(() => props.project.image ? assetUrl(props.project.ima
   border: var(--border-width) solid var(--color-border-strong);
   border-radius: var(--radius-1);
 }
-
 </style>
