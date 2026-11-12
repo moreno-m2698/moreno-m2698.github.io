@@ -1,27 +1,38 @@
 body {
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: var(--font-size-1);
   line-height: var(--line-height-base);
 }
 
-h1,
-h2,
-h3 {
-  line-height: var(--line-height-tight);
-}
-
 h1 {
-  font-size: var(--font-size-4);
+  font-size: 6rem;
+  line-height: var(--line-height-display);
 }
 
 h2 {
-  font-size: var(--font-size-3);
+  font-family: var(--font-heading-serif);
+  font-size: var(--font-size-6);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-display);
+  text-transform: uppercase;
 }
 
 h3 {
-  font-size: var(--font-size-2);
+  font-size: 1.17em;
+  line-height: var(--line-height-tight);
+}
+
+p {
+  line-height: var(--line-height-text);
+}
+
+/* Lists have no indent, margin or bullets by default; .prose adds them back for articles. */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
 }
 
 ul {
@@ -47,7 +58,7 @@ main:focus {
 .container {
   max-width: var(--page-max);
   margin-inline: auto;
-  padding-inline: var(--space-4);
+  padding: var(--gutter-top) var(--gutter-right) var(--gutter-bottom) var(--gutter-left);
 }
 
 .visually-hidden {
@@ -87,13 +98,7 @@ main:focus {
 
 /* Medium: 40rem (640px) and up */
 @media (min-width: 40rem) {
-  h1 {
-    font-size: var(--font-size-5);
-  }
-
-  .container {
-    padding-inline: var(--space-6);
-  }
+  /* Medium-screen styles go here. */
 }
 
 /* Large: 64rem (1024px) and up */

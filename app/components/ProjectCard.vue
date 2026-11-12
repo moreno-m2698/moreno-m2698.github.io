@@ -59,9 +59,6 @@ const imageSrc = computed(() => props.project.image ? assetUrl(props.project.ima
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
   font-size: var(--font-size-0);
 }
 
@@ -71,8 +68,4 @@ const imageSrc = computed(() => props.project.image ? assetUrl(props.project.ima
   border-radius: var(--radius-1);
 }
 
-.card img {
-  max-width: 100%;
-  height: auto;
-}
 </style>

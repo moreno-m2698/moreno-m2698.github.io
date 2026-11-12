@@ -1,4 +1,126 @@
 /* Home page styles, scoped to app/pages/index.vue. Mobile-first: add larger layouts at 40rem and 64rem. */
 
-.home {
+/*
+ * Hero: an editorial grid. A very large name on top, the description and nav
+ * underneath, and the accent image to the side.
+ *
+ *   Small (base)   2 columns, text | image, with the image beside the description
+ *   40rem and up   2 columns, wider text, image capped and pushed to the right
+ *   64rem and up   12 columns: text on the left half, image in the right third
+ *
+ * Sizes between breakpoints are fluid (clamp), so the hero adapts at every width.
+ */
+.home-hero {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(var(--space-4), 2.5vw, var(--space-6));
+  align-items: start;
+  margin-block-end: clamp(var(--space-6), 8vw, var(--space-8));
+}
+
+/* Let the title and description sit directly on the hero grid. */
+.home-hero > hgroup {
+  display: contents;
+}
+
+.home-hero__title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-normal);
+  /* Scales with the screen so "Michael" never overflows on phones. */
+  font-size: clamp(3rem, 17vw, 11rem);
+  line-height: .85;
+  letter-spacing: -.02em;
+}
+
+.home-hero__description {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  /* About 1rem on small phones, up to 1.5rem on wide screens. */
+  font-size: clamp(var(--font-size-1), .9rem + .75vw, var(--font-size-3));
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+
+.home-hero__accent-image {
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  aspect-ratio: .8;
+  border: 2px solid var(--color-text);
+  border-radius: var(--radius-2);
+  /* Clips the image's corners to the rounded border. */
+  overflow: hidden;
+}
+
+.home-hero__accent-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-nav {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.home-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.home-nav a {
+  display: inline-block;
+  padding-block: var(--space-1);
+  font-size: clamp(var(--font-size-1), .9rem + .5vw, var(--font-size-2));
+  line-height: var(--line-height-tight);
+  text-decoration: none;
+}
+
+.home-nav a:hover {
+  text-decoration: underline;
+}
+
+/* Medium: 40rem and up */
+@media (min-width: 40rem) {
+  .home-hero__description {
+    max-width: 28ch;
+  }
+
+  /* Keep the photo from growing too large beside the text. */
+  .home-hero__accent-image {
+    justify-self: end;
+    width: min(100%, 20rem);
+  }
+}
+
+/* Large: 64rem and up */
+@media (min-width: 64rem) {
+  .home-hero {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .home-hero__description {
+    grid-column: 1 / span 6;
+    max-width: 32ch;
+  }
+
+  .home-hero__accent-image {
+    grid-column: 9 / span 4;
+    width: 100%;
+  }
+
+  .home-nav {
+    grid-column: 1 / span 6;
+  }
+
+  .home-nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+  }
 }

@@ -38,12 +38,6 @@ const headingTag = computed(() => `h${props.headingLevel}`)
 </template>
 
 <style scoped>
-.article-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 .article-list > li + li {
   margin-block-start: var(--space-6);
 }
@@ -57,9 +51,7 @@ const headingTag = computed(() => `h${props.headingLevel}`)
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-3);
-  margin: var(--space-2) 0 0;
-  padding: 0;
-  list-style: none;
+  margin-block-start: var(--space-2);
   font-size: var(--font-size-0);
   color: var(--color-text-muted);
 }
