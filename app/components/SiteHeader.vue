@@ -6,8 +6,8 @@ const links = [
   { to: '/about', label: 'About' },
   { to: '/projects', label: 'Projects' },
   { to: '/articles', label: 'Articles' },
-  { to: '/resume', label: 'Resume' },
 ]
+const resumeUrl = assetUrl('/resume.pdf')
 </script>
 
 <template>
@@ -25,6 +25,9 @@ const links = [
           >
             <NuxtLink :to="link.to">{{ link.label }}</NuxtLink>
           </li>
+          <li>
+            <a :href="resumeUrl">Resume (PDF)</a>
+          </li>
         </ul>
       </nav>
       <ClientOnly>
@@ -33,7 +36,7 @@ const links = [
           <span
             class="theme-toggle-placeholder"
             aria-hidden="true"
-          >Dark theme</span>
+          >Switch to light theme</span>
         </template>
       </ClientOnly>
     </div>

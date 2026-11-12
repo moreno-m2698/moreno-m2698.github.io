@@ -24,10 +24,8 @@ h3 {
   font-size: var(--font-size-2);
 }
 
-@media (min-width: 40rem) {
-  h1 {
-    font-size: var(--font-size-5);
-  }
+ul {
+  list-style: none;
 }
 
 a {
@@ -50,12 +48,6 @@ main:focus {
   max-width: var(--page-max);
   margin-inline: auto;
   padding-inline: var(--space-4);
-}
-
-@media (min-width: 40rem) {
-  .container {
-    padding-inline: var(--space-6);
-  }
 }
 
 .visually-hidden {
@@ -86,6 +78,27 @@ main:focus {
 
 .skip-link:focus {
   transform: none;
+}
+
+/*
+ * Screen sizes, mobile-first. Styles above are for small screens; these
+ * blocks add to them as the viewport grows. Breakpoints are in tokens.css.
+ */
+
+/* Medium: 40rem (640px) and up */
+@media (min-width: 40rem) {
+  h1 {
+    font-size: var(--font-size-5);
+  }
+
+  .container {
+    padding-inline: var(--space-6);
+  }
+}
+
+/* Large: 64rem (1024px) and up */
+@media (min-width: 64rem) {
+  /* Large-screen styles go here. */
 }
 
 @media (prefers-reduced-motion: no-preference) {

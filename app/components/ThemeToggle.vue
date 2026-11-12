@@ -39,13 +39,13 @@ function toggle() {
 </script>
 
 <template>
+  <!-- The label names the theme a click switches to. No aria-pressed: a toggle button's label must not change. -->
   <button
     type="button"
     class="theme-toggle"
-    :aria-pressed="isDark ? 'true' : 'false'"
     @click="toggle"
   >
-    Dark theme
+    {{ isDark ? 'Switch to light theme' : 'Switch to dark theme' }}
   </button>
 </template>
 
@@ -58,9 +58,5 @@ function toggle() {
   background: transparent;
   color: inherit;
   cursor: pointer;
-}
-
-.theme-toggle[aria-pressed="true"] {
-  background: var(--color-surface);
 }
 </style>

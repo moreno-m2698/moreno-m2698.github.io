@@ -17,7 +17,7 @@ const articleRoutes = articleDirs
   .filter(dir => existsSync(dir))
   .flatMap(dir => readdirSync(dir).filter(name => name.endsWith('.html')))
   .map(name => `/articles/${name.slice(0, -'.html'.length)}`)
-const prerenderRoutes = ['/', '/about', '/projects', '/articles', '/resume', '/404', ...articleRoutes]
+const prerenderRoutes = ['/', '/about', '/projects', '/articles', '/404', ...articleRoutes]
 
 export default defineNuxtConfig({
   modules: ['@nuxt/eslint'],

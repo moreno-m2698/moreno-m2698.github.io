@@ -39,6 +39,11 @@
   padding-inline-start: var(--space-6);
 }
 
+/* base.css removes bullets from ul; articles keep them. */
+.prose ul {
+  list-style: disc;
+}
+
 .prose blockquote {
   padding: var(--space-4);
   border-inline-start: calc(var(--border-width) * 4) solid var(--color-border-strong);
