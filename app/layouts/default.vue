@@ -7,7 +7,7 @@
     <SiteHeader />
     <main
       id="main"
-      class="container site-main"
+      class="container"
       tabindex="-1"
     >
       <slot />
@@ -15,9 +15,3 @@
     <SiteFooter />
   </div>
 </template>
-
-<style scoped>
-.site-main {
-  padding-block: var(--space-7);
-}
-</style>

@@ -22,8 +22,5 @@ const resumeUrl = assetUrl('/resume.pdf')
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 </style>

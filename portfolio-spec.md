@@ -40,7 +40,7 @@ The site should come across as a clean, smooth, professional showcase. **The sit
 | `/projects` | Projects | Planned; design not decided. Placeholder page live |
 | `/articles` | Articles list | Built (basic) |
 | `/articles/:slug` | Article page | Built |
-| `/resume` | Resume (PDF) | Built; real PDF still to come |
+| `/resume.pdf` | Resume (PDF file, no page; Q46) | Placeholder PDF; real one still to come |
 | `/404` | Custom not-found page | Built |
 
 ## 5. Page Requirements
@@ -62,13 +62,13 @@ The page will exist; how it's built isn't decided (Q44). Ideas from the original
 - Title, date, "Updated on" line when set, reading time, tags, and the article body styled by the prose stylesheet.
 
 ### 5.6 Resume
-- **PDF only**, committed and served at `/resume.pdf`. The page links to it.
+- **PDF only**, committed and served at `/resume.pdf`. There is no `/resume` page (Q46): every Resume link opens the PDF directly.
 
 ### 5.7 Custom 404
 - A styled "page not found" page that works without JavaScript.
 
 ### 5.8 Global (every page)
-- Navigation to all main pages, always visible (wraps on narrow screens).
+- The site header holds **only the theme toggle** (Q48). Navigation to the main pages lives on the home page (and the footer as needed), not in a site-wide header.
 - Contact is **links only** (no contact form): LinkedIn, GitHub, Email.
 - Light/dark mode: follows the OS by default, with a manual toggle.
 
@@ -94,7 +94,7 @@ The page will exist; how it's built isn't decided (Q44). Ideas from the original
 | F-14 | Reading time estimate | Built |
 | F-15 | Tags shown on articles (as text) | Built |
 | F-19 | HTML article authoring in repo | Built |
-| F-20 | Resume PDF page / download | Built (placeholder PDF) |
+| F-20 | Resume PDF download | Built (placeholder PDF); the `/resume` page was removed (Q46) |
 | F-21 | Custom 404 page | Built |
 | F-22 | Light/dark mode with manual toggle | Built |
 | F-24 | Basic SEO: titles, meta descriptions, canonical URLs, semantic markup | Built (no sitemap) |
@@ -154,18 +154,18 @@ Not in scope. Any of these can come back by asking for it and moving it to §7.1
 | Q14 | Site identity values (name, tagline, contact URLs)? | **One typed file, `content/site.ts`**, with clearly marked placeholders until filled in |
 | Q15 | Visual design for the first build? | **Neutral placeholder palette + system font stack** as design tokens; real design applied later by changing tokens |
 | Q16 | Resume PDF before the real one exists? | **Placeholder PDF** at `/resume.pdf` (no personal details), replaced under the same name |
-| Q17 | Mobile navigation? | **All links always visible, wrapping** on narrow screens; no menu button, no JavaScript |
+| Q17 | Mobile navigation? | **All links always visible, wrapping** on narrow screens; no menu button, no JavaScript *(superseded by Q48: no site-wide navigation in the header)* |
 | Q18 | Breakpoints? | **40rem and 64rem** (`min-width`, mobile-first) |
 | Q19 | Article for testing before real articles exist? | **Test-only sample article** in a fixtures folder; never published |
 | Q20 | Empty states? | Short text ("No articles yet", "No projects yet"); Home's latest-articles section hidden when empty |
 | Q21 | Remember a manual theme choice? | **Yes**, in `localStorage`, applied by a tiny inline script before first paint; without JavaScript the OS setting applies |
-| Q22 | Theme toggle states? | **Two states** (Light / Dark button, `aria-pressed`) |
+| Q22 | Theme toggle states? | **Two states** (Light / Dark button, `aria-pressed`) *(superseded by Q47: action label, no `aria-pressed`)* |
 | Q23 | Date for an undated article that isn't committed yet? | **The file's last-modified date**; the git first-commit date takes over once committed |
 | Q24 | Standardize article metadata? | **Yes, an extensible standard**: required `<title>`; optional `description`, `date`, `updated`, `tags` *(`series` dropped by Q41)*. Unknown tags are ignored |
 | Q25 | Tag format? | **Obsidian-style**, space-separated, `#` optional; nested with `/`; case-insensitive; no spaces; not all numbers |
 | Q26 | Malformed metadata values? | Fail the article check in CI *(superseded by Q41: warn and fall back)* |
 | Q27 | Reading time formula? | **Body words ÷ 200 per minute**, rounded, minimum 1 minute |
-| Q28 | Where does the Resume call-to-action link? | **Straight to `/resume.pdf`**; the `/resume` page stays reachable from the main navigation |
+| Q28 | Where does the Resume call-to-action link? | **Straight to `/resume.pdf`**; the `/resume` page stays reachable from the main navigation *(superseded by Q46: no `/resume` page)* |
 | Q29 | Search and tag controls before they're built? | **Omitted** (no disabled placeholders); tags shown as text |
 | Q30 | Record Milestone 1 technical decisions in the constitution? | **Yes** (constitution v1.1.0) |
 | Q31 | TypeScript 7 is unsupported by typescript-eslint; which version? | **Pin TypeScript 6.x** until typescript-eslint supports 7 |
@@ -183,3 +183,7 @@ Not in scope. Any of these can come back by asking for it and moving it to §7.1
 | Q43 | What happens to the existing checks and CI? | **CI only installs, builds and deploys.** The check scripts stay as review tools (`pnpm check`, `/review-frontend`); CSP hashing stays in the build |
 | Q44 | About and Projects pages? | **They will exist, but their design isn't decided.** The current details are tentative ideas and don't block other work |
 | Q45 | What's the priority, and what must Home contain? | **Home first**, and its contents are **fully open** until the owner has built something they like. Other pages come after |
+| Q46 | Does the resume need its own page? | **No.** The `/resume` page is removed; every Resume link (main navigation, Home, footer) opens `/resume.pdf` directly (2026-11-11) |
+| Q47 | What does the theme button say? | **The theme a click switches to** ("Switch to dark theme" / "Switch to light theme"). `aria-pressed` is dropped, because a toggle button's label must not change (2026-11-11) |
+| Q48 | What goes in the site header? | **Only the theme toggle.** The site name and main navigation are removed from the header; the home page carries the navigation. Other pages have no header navigation for now (2026-11-11) |
+| Q49 | How do links look on the home page and in the footer? | **The same color as the text** (shared `.reveal-links` class in `base.css`). Touch devices always show the underline. On devices that can hover (`hover: hover` and `pointer: fine`), the underline is hidden and draws in from left to right on hover and on keyboard focus. Home page and site footer only: article and other page links keep the standard link style (2026-11-12; footer added the same day) |

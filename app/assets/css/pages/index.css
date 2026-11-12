@@ -1,0 +1,91 @@
+/* Home page styles, scoped to app/pages/index.vue. Mobile-first: add larger layouts at 40rem and 64rem. */
+
+/*
+ * Hero: a very large stacked name with the description underneath.
+ * The name's size follows the hero's width (cqi), so it fits at every width.
+ */
+.home-hero {
+  display: flex;
+  overflow: hidden;
+  column-gap: .5rem;
+  align-content: start;
+  /* cqi units inside the hero (the name's font size) measure the hero's width. */
+  container-type: inline-size;
+}
+
+.segment {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-normal);
+  /* "MICHAEL" is about 9.05em wide, so 10.8% of the hero's width fits it with a little room to spare. */
+  font-size: 10.8cqi;
+  line-height: 1;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+}
+
+.home-hero__description {
+  margin-block-start: .5rem;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+
+/* The About and Projects sections share one look: a bordered title over larger body text. */
+.home-about,
+.home-projects {
+  /* Top only, so neighbouring sections are 2rem apart instead of 4rem. */
+  padding-block-start: 2rem;
+}
+
+.home-projects {
+  padding-block-end: 2rem;
+}
+
+.home-about__title,
+.home-projects__title {
+  font-size: 4rem;
+  text-transform: uppercase;
+  line-height: .9;
+  padding-block: 1rem;
+  border-block: 2px solid var(--color-text);
+  margin-block-end: 2rem;
+}
+
+.home-about__content,
+.home-projects__content {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.home-about__content > :not(h3),
+.home-projects__content > :not(h3) {
+  margin-block-end: 1em;
+}
+
+/* The section's padding handles the gap after the last block. */
+.home-about__content > :last-child,
+.home-projects__content > :last-child {
+  margin-block-end: 0;
+}
+
+.home-about__content h3,
+.home-projects__content h3 {
+  text-transform: uppercase;
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
+}
+
+/* Medium: 40rem and up */
+@media (min-width: 40rem) {
+  .home-hero__description {
+    max-width: 28ch;
+  }
+}
+
+/* Large: 64rem and up */
+@media (min-width: 64rem) {
+  .home-hero__description {
+    max-width: 32ch;
+  }
+}

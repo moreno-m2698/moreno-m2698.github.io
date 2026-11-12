@@ -1,39 +1,72 @@
 body {
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: var(--font-size-1);
   line-height: var(--line-height-base);
 }
 
-h1,
-h2,
-h3 {
-  line-height: var(--line-height-tight);
-}
-
 h1 {
-  font-size: var(--font-size-4);
+  font-size: 6rem;
+  line-height: var(--line-height-display);
 }
 
 h2 {
-  font-size: var(--font-size-3);
+  font-family: var(--font-heading-serif);
+  font-size: var(--font-size-6);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-display);
+  text-transform: uppercase;
 }
 
 h3 {
-  font-size: var(--font-size-2);
 }
 
-@media (min-width: 40rem) {
-  h1 {
-    font-size: var(--font-size-5);
-  }
+p {
+}
+
+/* Lists have no indent, margin or bullets by default; .prose adds them back for articles. */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
 }
 
 a {
   color: var(--color-link);
   text-decoration: underline;
   text-underline-offset: .15em;
+}
+
+/*
+ * Links inside .reveal-links (spec Q49: home page and footer): the same color as the
+ * text. Touch screens keep the underline; mouse and trackpad users get an underline
+ * that draws in from left to right on hover or keyboard focus. Reduced motion sets
+ * the duration to 0.
+ */
+.reveal-links a {
+  color: var(--color-text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .reveal-links a {
+    text-decoration: none;
+    /* The underline is a background line, so it can grow from the left and wrap with the text. */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 0% 1px;
+    transition: background-size var(--duration-base) ease-out;
+  }
+
+  .reveal-links a:hover,
+  .reveal-links a:focus-visible {
+    background-size: 100% 1px;
+  }
 }
 
 :focus-visible {
@@ -49,13 +82,7 @@ main:focus {
 .container {
   max-width: var(--page-max);
   margin-inline: auto;
-  padding-inline: var(--space-4);
-}
-
-@media (min-width: 40rem) {
-  .container {
-    padding-inline: var(--space-6);
-  }
+  padding: var(--gutter-top) var(--gutter-right) var(--gutter-bottom) var(--gutter-left);
 }
 
 .visually-hidden {
@@ -86,6 +113,21 @@ main:focus {
 
 .skip-link:focus {
   transform: none;
+}
+
+/*
+ * Screen sizes, mobile-first. Styles above are for small screens; these
+ * blocks add to them as the viewport grows. Breakpoints are in tokens.css.
+ */
+
+/* Medium: 40rem (640px) and up */
+@media (min-width: 40rem) {
+  /* Medium-screen styles go here. */
+}
+
+/* Large: 64rem (1024px) and up */
+@media (min-width: 64rem) {
+  /* Large-screen styles go here. */
 }
 
 @media (prefers-reduced-motion: no-preference) {
